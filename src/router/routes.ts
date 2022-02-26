@@ -12,6 +12,12 @@ export const menuRoutes: Array<RouteRecordRaw> = [
     meta: { title: "历程" },
   },
   {
+    path: "/work",
+    name: "Work",
+    component: () => import("@/views/work/Work.vue"),
+    meta: { title: "历程" },
+  },
+  {
     path: "/photography",
     name: "Photography",
     component: () => import("@/views/photography/Photography.vue"),
@@ -33,12 +39,7 @@ export const routes: Array<RouteRecordRaw> = [
     children: menuRoutes,
   },
   {
-    path: "/404",
-    name: "404",
-    component: () => import("@/views/error/404.vue"),
-  },
-  {
     path: "/:pathMatch(.*)*",
-    redirect: { name: "404" },
+    redirect: { name: "Personal" },
   },
 ];

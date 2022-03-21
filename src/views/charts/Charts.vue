@@ -1,6 +1,6 @@
 <template>
-  <div id="container"
-       ref="container"></div>
+  <div id="gridContainer"
+       ref="gridContainer"></div>
 </template>
 
 <script lang="ts">
@@ -9,21 +9,58 @@ import * as echarts from "echarts";
 import "echarts-gl";
 export default {
   setup() {
-    const container = ref<HTMLDivElement>();
+    const gridContainer = ref<HTMLDivElement>();
     onMounted(() => {
-      setTimeout(() => {
-        const myChart = echarts.init(container.value!);
-        const option: any = {
-          mapbox3D: {
-            style: "mapbox://styles/mapbox/dark-v9",
+      const gridChart = echarts.init(gridContainer.value!);
+      const option: any = {
+        visualMap: {
+          show: false,
+          dimension: 2,
+          min: -1,
+          max: 1,
+        },
+        grid3D: {
+          boxWidth: 80,
+          boxHeight: 80,
+          boxDepth: 80,
+        },
+        xAxis3D: {},
+        yAxis3D: {},
+        zAxis3D: {},
+        series: [
+          {
+            type: "surface",
+            parametric: true,
+            // shading: 'albedo',
+            parametricEquation: {
+              u: {
+                min: -Math.PI,
+                max: Math.PI,
+                step: Math.PI / 20,
+              },
+              v: {
+                min: 0,
+                max: Math.PI,
+                step: Math.PI / 20,
+              },
+              x: function (u: number, v: number) {
+                return Math.sin(v) * Math.sin(u);
+              },
+              y: function (u: number, v: number) {
+                return Math.sin(v) * Math.cos(u);
+              },
+              z: function (u: number, v: number) {
+                return Math.cos(v);
+              },
+            },
           },
-        };
-        myChart.setOption(option);
-      });
+        ],
+      };
+      gridChart.setOption(option);
     });
 
     return {
-      container,
+      gridContainer,
     };
   },
 };
@@ -32,7 +69,7 @@ export default {
 .ant-layout-content {
   background-color: #001529;
 }
-#container {
+#gridContainer {
   height: 100%;
 }
 </style>

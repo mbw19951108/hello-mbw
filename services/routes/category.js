@@ -4,64 +4,71 @@ const CategoryModel = require("../model/categoryModel");
 const ArticleModel = require("../model/articleModel");
 const mongoose = require("../model/core");
 
-router.get("/category", async (req, res) => {
-  const result = await CategoryModel.aggregate([
-    {
-      $lookup: {
-        from: "article_cate",
-        localField: "_id",
-        foreignField: "pid",
-        as: "items",
+router
+  .route("/category")
+  .get(async (req, res) => {
+    const result = await CategoryModel.aggregate([
+      {
+        $lookup: {
+          from: "category",
+          localField: "_id",
+          foreignField: "parent_id",
+          as: "children",
+        },
       },
-    },
-    {
-      $match: {
-        pid: "0",
+      {
+        $match: {
+          parent_id: 0,
+        },
       },
-    },
-  ]);
-  res.status(200).send({
-    data: result,
-  });
-});
-
-router.post("/category", async (req, res) => {
-  const { title, parentId, description, sort } = {
-    ...req.body,
-  };
-
-  if (!title) {
-    res.status(400).json({
-      message: "分类名称不能为空",
+    ]);
+    res.send({
+      data: result,
     });
-  }
+  })
+  .post(async (req, res) => {
+    const { title, parentId, description, sort } = {
+      ...req.body,
+    };
 
-  if (parentId) {
-    parentId = mongoose.Types.ObjectId(parentId);
-  }
+    if (!title) {
+      res.status(400).json({
+        message: "分类名称不能为空",
+      });
+    }
 
-  if (sort && typeof sort !== "number") {
-    res.status(400).json({
-      message: "请求参数格式不正确",
+    if (parentId) {
+      parent_id = mongoose.Types.ObjectId(parentId);
+    } else {
+      parent_id = 0;
+    }
+
+    if (sort && typeof sort !== "number") {
+      res.status(400).json({
+        message: "请求参数格式不正确",
+      });
+    }
+
+    const newCategory = new CategoryModel({
+      title,
+      parent_id,
+      description,
+      sort,
     });
-  }
-
-  const newCategory = new CategoryModel({
-    title,
-    parentId,
-    description,
-    sort,
+    const result = await newCategory.save();
+    result &&
+      res.json({
+        success: true,
+      });
   });
-  const result = await newCategory.save();
-  result && res.status(201).end();
-});
 
 router
   .route("/category/:categoryId")
   .get(async (req, res) => {
-    const result = await CategoryModel.findById(req.params.categoryId);
+    const id = mongoose.Types.ObjectId(req.params.categoryId);
+    const result = await CategoryModel.findById(id);
     if (result) {
-      res.status(200).json({
+      res.json({
         data: result,
       });
     } else {
@@ -70,8 +77,9 @@ router
       });
     }
   })
-  .put(async (req, res) => {
-    const { title, parentId, description, sort } = {
+  .patch(async (req, res) => {
+    const id = mongoose.Types.ObjectId(req.params.categoryId);
+    const { title, parent_id, description, sort } = {
       ...req.body,
     };
 
@@ -81,18 +89,17 @@ router
       });
     }
 
-    const result = await CategoryModel.findByIdAndUpdate(
-      req.params.categoryId,
-      {
-        title,
-        parentId,
-        description,
-        sort,
-      }
-    );
+    const result = await CategoryModel.findByIdAndUpdate(id, {
+      title,
+      parent_id,
+      description,
+      sort,
+    });
 
     if (result) {
-      res.status(201).end();
+      res.json({
+        success: true,
+      });
     } else {
       res.status(404).json({
         message: "当前分类不存在",
@@ -100,9 +107,9 @@ router
     }
   })
   .delete(async (req, res) => {
-    const id = req.params.categoryId;
+    const id = mongoose.Types.ObjectId(req.params.categoryId);
     const childResult = await CategoryModel.find({
-      parentId: mongoose.Types.ObjectId(id),
+      parent_id: id,
     });
     if (childResult.length > 0) {
       res.status(400).json({
@@ -110,20 +117,20 @@ router
       });
     } else {
       const articleResult = await ArticleModel.find({
-        categoryId: mongoose.Types.ObjectId(id),
+        category_id: id,
       });
       if (articleResult.length > 0) {
         res.status(400).json({
           message: "请先删除该分类下的文章",
         });
       } else {
-        const result = await CategoryModel.findByIdAndDelete(req.params.id);
+        const result = await CategoryModel.findByIdAndDelete(id);
         if (result) {
-          res.status(201).json({
-            message: "删除成功",
+          res.json({
+            success: true,
           });
         } else {
-          res.status(404).json({
+          res.status(400).json({
             message: "当前分类不存在",
           });
         }

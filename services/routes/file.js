@@ -5,10 +5,15 @@ const fs = require("fs");
 const path = require("path");
 const router = express.Router();
 
+// 最大5MB
+const maxSize = 5 * 1024 * 1024;
+// 最多9张
+const maxCount = 9;
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: async (req, file, cb) => {
-      const dir = "./static/upload/" + moment().format("YYYYMMDD");
+      const dir = "./public/upload/" + moment().format("YYYYMMDD");
       // 判断目录是否存在，没有则创建
       if (!fs.existsSync(dir)) {
         await fs.mkdirSync(dir, {
@@ -24,12 +29,41 @@ const upload = multer({
       cb(null, Date.now() + extname);
     },
   }),
+  limits: {
+    fileSize: maxSize,
+    files: maxCount,
+  },
+  fileFilter: (req, file, cb) => {
+    // 校验图片格式
+    if (file.mimetype == "image/png" || file.mimetype == "image/jpeg") {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+  },
 });
 
-router.post("/upload", upload.single("file"), async (req, res) => {
-  console.log(req.file);
-  res.status(201).json({
-    file: req.file,
+const singleUpload = upload.single("image");
+router.post("/upload", async (req, res) => {
+  singleUpload(req, res, (err) => {
+    if (err) {
+      let message;
+      switch (err.code) {
+        case "LIMIT_FILE_SIZE":
+          message = "请上传小于5MB的图片";
+          break;
+        default:
+          message = "上传失败";
+          break;
+      }
+      res.status(500).json({
+        message,
+      });
+    } else {
+      res.json({
+        path: `${req.file.path.substring(6)}`,
+      });
+    }
   });
 });
 

@@ -2,10 +2,9 @@
   <a-layout class="layout-container">
     <a-layout-header class="header">
       <div class="logo" />
-      <a-menu v-model:selectedKeys="selectedKeys"
+      <a-menu :selectedKeys="selectedKeys"
               theme="dark"
-              mode="horizontal"
-              :style="{ lineHeight: '64px' }">
+              mode="horizontal">
         <a-menu-item v-for="route in filterRoutes()"
                      :key="route.name">
           <router-link :to="{ path: route.path }">
@@ -44,6 +43,7 @@ export default defineComponent({
       menuRoutes.filter((route) => {
         if (!route.redirect) return true;
       });
+
 
     return {
       selectedKeys,

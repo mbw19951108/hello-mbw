@@ -2,10 +2,10 @@ const mongoose = require("./core");
 
 let CategorySchema = mongoose.Schema({
   title: { type: String },
-  parentId: {
+  parent_id: {
     type: mongoose.Schema.Types.Mixed, //混合类型
+    default: 0,
   },
-  description: { type: String },
   sort: {
     type: Number,
     default: 100,

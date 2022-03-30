@@ -8,8 +8,8 @@
     <a-layout style="padding: 24px 0; background: #fff">
       <a-layout-sider width="200"
                       style="background: #fff">
-        <a-menu v-model:selectedKeys="selectedKeys2"
-                v-model:openKeys="openKeys"
+        <a-menu :selectedKeys="selectedKeys2"
+                :openKeys="openKeys"
                 mode="inline"
                 style="height: 100%">
           <a-sub-menu key="sub1">

@@ -7,8 +7,8 @@ let UserSchema = mongoose.Schema({
   email: { type: String },
   mobile: { type: String },
   type: { type: String, default: "user" },
-  createdAt: { type: Number },
-  loginAt: { type: Number },
+  created_time: { type: Number },
+  login_time: { type: Number },
 });
 
 module.exports = mongoose.model("User", UserSchema, "user");

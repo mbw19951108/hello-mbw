@@ -2,22 +2,15 @@ const mongoose = require("./core");
 
 let ArticleSchema = mongoose.Schema({
   title: { type: String },
-  categoryId: {
+  category_id: {
     type: mongoose.Schema.Types.ObjectId,
   },
-  description: { type: String },
   keywords: { type: String },
   content: { type: String },
-  content: { type: String },
-  clickCount: { type: String },
-  author: { type: String },
-  createdAt: { type: Number },
-  updatedAt: { type: Number },
-  isShow: { type: Boolean, default: true },
-  sort: {
-    type: Number,
-    default: 100,
-  },
+  click_count: { type: String },
+  created_time: { type: Number },
+  updated_time: { type: Number },
+  is_show: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model("Article", ArticleSchema, "article");

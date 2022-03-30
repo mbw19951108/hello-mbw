@@ -33,6 +33,12 @@ export const menuRoutes: Array<RouteRecordRaw> = [
 
 export const routes: Array<RouteRecordRaw> = [
   {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("@/views/admin/admin.vue"),
+    meta: { title: "后台管理" },
+  },
+  {
     path: "/",
     name: "Menu",
     component: () => import("@/views/layout/Layout.vue"),

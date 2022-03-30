@@ -30,12 +30,12 @@ router.post("/login", async (req, res, next) => {
       password: md5(password),
     },
     {
-      loginAt: new Date(),
+      login_time: new Date(),
     }
   );
   if (result) {
     req.session.userinfo = result[0];
-    res.status(200).send({
+    res.send({
       message: "登录成功",
     });
   } else {

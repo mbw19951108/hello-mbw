@@ -21,6 +21,7 @@
     "express-session": "^1.17.2",
     "less": "^4.1.2",
     "less-loader": "6.0.0",
+    "lodash": "^4.17.21",
     "mapbox-gl": "^2.7.0",
     "mavon-editor": "^3.0.0-beta",
     "md5": "^2.3.0",

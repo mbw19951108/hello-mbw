@@ -68,7 +68,7 @@ router
   .patch(async (req, res) => {
     const category_id = mongoose.Types.ObjectId(req.params.categoryId);
     const article_id = mongoose.Types.ObjectId(req.params.articleId);
-    const { title, keywords, content, is_show } = {
+    const { title, keywords, content, mdcontent, is_show } = {
       ...req.body,
     };
 
@@ -81,6 +81,7 @@ router
         title,
         keywords,
         content,
+        mdcontent,
         is_show,
         updated_time: new Date(),
       }
@@ -115,4 +116,55 @@ router
     }
   });
 
+router
+  .route("/category/:categoryId/article/:articleId/publish")
+  .patch(async (req, res) => {
+    const category_id = mongoose.Types.ObjectId(req.params.categoryId);
+    const article_id = mongoose.Types.ObjectId(req.params.articleId);
+    const result = await ArticleModel.findOneAndUpdate(
+      {
+        _id: article_id,
+        category_id,
+      },
+      {
+        is_show: true,
+      }
+    );
+
+    if (result) {
+      res.json({
+        success: true,
+      });
+    } else {
+      res.status(400).json({
+        message: "当前文章不存在",
+      });
+    }
+  });
+
+router
+  .route("/category/:categoryId/article/:articleId/unpublish")
+  .patch(async (req, res) => {
+    const category_id = mongoose.Types.ObjectId(req.params.categoryId);
+    const article_id = mongoose.Types.ObjectId(req.params.articleId);
+    const result = await ArticleModel.findOneAndUpdate(
+      {
+        _id: article_id,
+        category_id,
+      },
+      {
+        is_show: false,
+      }
+    );
+
+    if (result) {
+      res.json({
+        success: true,
+      });
+    } else {
+      res.status(400).json({
+        message: "当前文章不存在",
+      });
+    }
+  });
 module.exports = router;

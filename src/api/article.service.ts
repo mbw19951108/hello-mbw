@@ -12,4 +12,8 @@ export const ArticleService = {
     http.patch(`/category/${categoryId}/article/${articleId}`, body),
   delete: (categoryId: string, articleId: string) =>
     http.delete(`/category/${categoryId}/article/${articleId}`),
+  publish: (categoryId: string, articleId: string) =>
+    http.patch(`/category/${categoryId}/article/${articleId}/publish`),
+  unpublish: (categoryId: string, articleId: string) =>
+    http.patch(`/category/${categoryId}/article/${articleId}/unpublish`),
 };

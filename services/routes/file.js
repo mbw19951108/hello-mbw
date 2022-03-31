@@ -61,7 +61,9 @@ router.post("/upload", async (req, res) => {
       });
     } else {
       res.json({
-        path: `${req.file.path.substring(6)}`,
+        data: {
+          path: `${req.file.path.substring(6)}`,
+        },
       });
     }
   });

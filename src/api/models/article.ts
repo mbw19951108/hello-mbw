@@ -18,5 +18,6 @@ export interface ArticleCreateBody {
 export interface ArticleUpdateBody {
   title?: string;
   content?: string;
+  mdcontent?: string;
   keywords?: string;
 }

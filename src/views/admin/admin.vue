@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- 文章分类 -->
     <div class="left">
       <a-menu class="left__menu"
               mode="inline">
@@ -30,6 +31,7 @@
         </a-sub-menu>
       </a-menu>
     </div>
+    <!-- 文章列表 -->
     <div class="mid">
       <a-button type="primary"
                 @click="onCreateArticle()">
@@ -57,15 +59,25 @@
         </a-popconfirm>
       </div>
     </div>
+    <!-- markdown编辑器 -->
     <div class="right">
       <mavon-editor class="right__editor"
-                    v-model="content"
+                    v-model="mdcontent"
                     ref="md"
                     @imgAdd="onImgAdd"
-                    @save="onSave" />
+                    @save="onSave">
+        <template #left-toolbar-after>
+          <span class="mid__list__publish"
+                v-if="!articleDetail?.is_show"
+                @click="onPublish()">发布</span>
+          <span class="mid__list__unpublish"
+                v-if="articleDetail?.is_show"
+                @click="onUnpublish()">取消发布</span>
+        </template>
+      </mavon-editor>
     </div>
   </div>
-
+  <!-- mdoal -->
   <a-modal :destroyOnClose="true"
            :visible="showModal"
            :footer="null"
@@ -104,6 +116,7 @@ import CategoryUpdate from "./category-update.vue";
 import ArticleUpdate from "./article-update.vue";
 import { ArticleModel, CategoryModel } from "@/api/models";
 import moment from "moment";
+import _ from "lodash";
 
 export enum ModalType {
   articleUpdate = "articleUpdate",
@@ -140,15 +153,18 @@ export default defineComponent({
     const modalType = ref();
     const selectCategoryId = ref<string>();
     const selectArticleId = ref<string>();
+
     // 分类列表
     const categoryList = ref<CategoryModel[]>([]);
+    // 文章列表
     const articleList = ref<ArticleModel[]>([]);
+    // 文章详情
     const articleDetail = ref<ArticleModel>();
+    // markdown内容
+    const mdcontent = ref<string>("");
 
-    onMounted(() => {
-      searchCategories();
-    });
-    // 获取文章分类
+    onMounted(() => searchCategories());
+    // 获取分类
     const searchCategories = async () => {
       try {
         const { data } = await CategoryService.search();
@@ -172,15 +188,48 @@ export default defineComponent({
     const getArticleDetail = async (articleId: string) => {
       try {
         const { data } = await ArticleService.detail(
-          selectCategoryId.value as string,
+          selectCategoryId.value!,
           articleId
         );
         articleDetail.value = data;
+        mdcontent.value = data.mdcontent || "";
       } catch (error: any) {
         message.error(error.message);
       }
     };
-    // markdown图片上传
+    // modal：创建分类
+    const onCreateCategory = async () => {
+      modalType.value = ModalType.categoryCreate;
+      modalTitle.value = ModalTitle.categoryCreate;
+      showModal.value = true;
+    };
+    // modal：编辑分类
+    const onEditCategory = async () => {
+      modalType.value = ModalType.categoryUpdate;
+      modalTitle.value = ModalTitle.categoryUpdate;
+      showModal.value = true;
+    };
+    // modal：编辑文章标题
+    const onEditArticle = async () => {
+      modalType.value = ModalType.articleUpdate;
+      modalTitle.value = ModalTitle.articleUpdate;
+      showModal.value = true;
+    };
+    // modal：关闭
+    const onCancel = async () => {
+      showModal.value = false;
+    };
+    // modal：分类成功回调
+    const onCategorySuccess = async () => {
+      onCancel();
+      searchCategories();
+    };
+    // modal：文章成功回调
+    const onArticleSuccess = async () => {
+      onCancel();
+      searchArticles(selectCategoryId.value!);
+    };
+    // markdown：图片上传
     const onImgAdd = async (pos: any, $file: File) => {
       const formdata = new FormData();
       formdata.append("image", $file);
@@ -195,46 +244,35 @@ export default defineComponent({
         message.error(error.message);
       }
     };
-    const onCreateCategory = async () => {
-      modalType.value = ModalType.categoryCreate;
-      modalTitle.value = ModalTitle.categoryCreate;
-      showModal.value = true;
-    };
-    const onEditCategory = async () => {
-      modalType.value = ModalType.categoryUpdate;
-      modalTitle.value = ModalTitle.categoryUpdate;
-      showModal.value = true;
-    };
-    const onEditArticle = async () => {
-      modalType.value = ModalType.articleUpdate;
-      modalTitle.value = ModalTitle.articleUpdate;
-      showModal.value = true;
-    };
-    // 关闭modal
-    const onCancel = async () => {
-      showModal.value = false;
-    };
-    const onCategorySuccess = async () => {
-      onCancel();
-      searchCategories();
-    };
-    const onArticleSuccess = async () => {
-      onCancel();
-      searchArticles(selectCategoryId.value as string);
-    };
-    // markdown保存事件
+    // markdown：保存
     const onSave = async (value: string, render: string) => {
-      // render：文章解析后的结果
-      console.log(render);
-      // const body = {
-      //   content: render,
-      // };
-      // try {
-      //   const { data } = await ArticleService.create(body);
-      //   console.log(data);
-      // } catch (error: any) {
-      //   message.error(error.message);
-      // }
+      // value：markdown格式
+      // render：html格式
+      if (!render) {
+        message.warning("请填写文章内容");
+        return;
+      }
+      if (!selectCategoryId.value) {
+        message.warning("请选择文章分类");
+        return;
+      }
+      if (!selectArticleId.value) {
+        message.warning("请选择文章");
+        return;
+      }
+      const body = {
+        content: render,
+        mdcontent: value,
+      };
+      try {
+        await ArticleService.update(
+          selectCategoryId.value!,
+          selectArticleId.value!,
+          body
+        );
+      } catch (error: any) {
+        message.error(error.message);
+      }
     };
     // 删除分类
     const onDelCategory = async (categoryId: string) => {
@@ -254,11 +292,11 @@ export default defineComponent({
     const onDelArticle = async (articleId: string) => {
       try {
         const { success } = await ArticleService.delete(
-          selectCategoryId.value as string,
+          selectCategoryId.value!,
           articleId
         );
         if (success) {
-          searchArticles(selectCategoryId.value as string);
+          searchArticles(selectCategoryId.value!);
           selectArticleId.value = "";
           message.success("删除成功");
         }
@@ -266,7 +304,7 @@ export default defineComponent({
         message.error(error.message);
       }
     };
-
+    // 选择文章
     const onSelectArticle = async (articleId: string) => {
       if (selectArticleId.value === articleId) {
         return;
@@ -274,7 +312,7 @@ export default defineComponent({
       selectArticleId.value = articleId;
       getArticleDetail(articleId);
     };
-
+    // 选择分类
     const onSelectCategory = async (categoryId: string) => {
       if (selectCategoryId.value === categoryId) {
         return;
@@ -282,7 +320,7 @@ export default defineComponent({
       selectCategoryId.value = categoryId;
       searchArticles(categoryId);
     };
-
+    // 创建文章
     const onCreateArticle = async () => {
       if (!selectCategoryId.value) {
         message.warning("请先选择分类");
@@ -301,15 +339,62 @@ export default defineComponent({
         message.error(error.message);
       }
     };
+    // 发布文章
+    const onPublish = async () => {
+      if (!selectCategoryId.value) {
+        message.warning("请选择文章分类");
+        return;
+      }
+      if (!selectArticleId.value) {
+        message.warning("请选择文章");
+        return;
+      }
+      try {
+        const { success } = await ArticleService.publish(
+          selectCategoryId.value!,
+          selectArticleId.value!
+        );
+        if (success) {
+          message.success("发布成功");
+          articleDetail.value!.is_show = true;
+        }
+      } catch (error: any) {
+        message.error(error.message);
+      }
+    };
+    // 取消发布文章
+    const onUnpublish = async () => {
+      if (!selectCategoryId.value) {
+        message.warning("请选择文章分类");
+        return;
+      }
+      if (!selectArticleId.value) {
+        message.warning("请选择文章");
+        return;
+      }
+      try {
+        const { success } = await ArticleService.unpublish(
+          selectCategoryId.value!,
+          selectArticleId.value!
+        );
+        if (success) {
+          message.success("取消发布成功");
+          articleDetail.value!.is_show = false;
+        }
+      } catch (error: any) {
+        message.error(error.message);
+      }
+    };
     return {
-      content: "",
-      md,
+      mdcontent, // markdown格式文章内容
+      md, // markdown
       showModal,
       modalType,
       ModalType, // enum
       modalTitle,
       categoryList,
       articleList,
+      articleDetail,
       selectCategoryId,
       selectArticleId,
       onCancel,
@@ -325,6 +410,8 @@ export default defineComponent({
       onEditArticle,
       onSelectArticle,
       onDelArticle,
+      onPublish,
+      onUnpublish,
     };
   },
 });
@@ -392,6 +479,12 @@ export default defineComponent({
         position: absolute;
         right: 10px;
         top: 14px;
+      }
+      &__publish,
+      &__unpublish {
+        font-size: 14px;
+        margin-left: 10px;
+        cursor: pointer;
       }
     }
     &__list-active {

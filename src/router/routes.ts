@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from "vue-router";
+import authGuard from "./guards/auth.guard";
 
 export const menuRoutes: Array<RouteRecordRaw> = [
   {
@@ -33,10 +34,17 @@ export const menuRoutes: Array<RouteRecordRaw> = [
 
 export const routes: Array<RouteRecordRaw> = [
   {
+    path: "/login",
+    name: "Login",
+    component: () => import("@/views/login/login.vue"),
+    meta: { title: "用户登录" },
+  },
+  {
     path: "/admin",
     name: "Admin",
     component: () => import("@/views/admin/admin.vue"),
     meta: { title: "后台管理" },
+    beforeEnter: [authGuard],
   },
   {
     path: "/",

@@ -6,12 +6,12 @@ const mongoose = require("../model/core");
 router.route("/article").post(async (req, res) => {
   const { title, category_id } = { ...req.body };
   if (!category_id) {
-    res.status(400).json({
+    res.status(500).json({
       message: "请选择文章分类",
     });
   }
   if (!title) {
-    res.status(400).json({
+    res.status(500).json({
       message: "请填写文章标题",
     });
   }
@@ -36,13 +36,19 @@ router.route("/category/:categoryId/article").get(async (req, res) => {
   const category_id = mongoose.Types.ObjectId(req.params.categoryId);
   let result = null;
   if (pageable === "0") {
-    result = await ArticleModel.find({
-      category_id,
-    }).sort({ created_time: -1 });
+    result = await ArticleModel.find(
+      {
+        category_id,
+      },
+      { content: 0, mdcontent: 0 }
+    ).sort({ created_time: -1 });
   } else {
-    result = await ArticleModel.find({
-      category_id,
-    })
+    result = await ArticleModel.find(
+      {
+        category_id,
+      },
+      { content: 0, mdcontent: 0 }
+    )
       .skip((pageNo - 1) * pageSize)
       .limit(pageSize)
       .sort({ created_time: -1 });
@@ -57,10 +63,19 @@ router
   .get(async (req, res) => {
     const category_id = mongoose.Types.ObjectId(req.params.categoryId);
     const article_id = mongoose.Types.ObjectId(req.params.articleId);
-    const result = await ArticleModel.findOne({
+    const { click_count } = await ArticleModel.findOne({
       _id: article_id,
       category_id,
     });
+    const result = await ArticleModel.findOneAndUpdate(
+      {
+        _id: article_id,
+        category_id,
+      },
+      {
+        click_count: click_count + 1,
+      }
+    );
     res.json({
       data: result,
     });
@@ -92,7 +107,7 @@ router
         success: true,
       });
     } else {
-      res.status(400).json({
+      res.status(500).json({
         message: "当前文章不存在",
       });
     }
@@ -110,7 +125,7 @@ router
         success: true,
       });
     } else {
-      res.status(400).json({
+      res.status(500).json({
         message: "当前文章不存在",
       });
     }
@@ -136,7 +151,7 @@ router
         success: true,
       });
     } else {
-      res.status(400).json({
+      res.status(500).json({
         message: "当前文章不存在",
       });
     }
@@ -162,7 +177,7 @@ router
         success: true,
       });
     } else {
-      res.status(400).json({
+      res.status(500).json({
         message: "当前文章不存在",
       });
     }

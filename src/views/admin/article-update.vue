@@ -53,7 +53,7 @@ export default {
           },
           {
             max: 20,
-            message: "最多不超过二十位",
+            message: "最多不超过20位",
           },
         ],
       })
@@ -70,16 +70,19 @@ export default {
 
     const updateArticle = async (body: ArticleUpdateBody) => {
       try {
+        loading.value = true;
         const { success } = await ArticleService.update(
           props.categoryId,
           props.articleId,
           body
         );
         if (success) {
+          loading.value = false;
           message.success("编辑成功");
           emit("success");
         }
       } catch (error: any) {
+        loading.value = false;
         message.error(error.message);
       }
     };

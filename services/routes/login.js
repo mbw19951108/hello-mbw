@@ -1,25 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const UserModel = require("../model/userModel");
+const CaptchaModel = require("../model/captchaModel");
 const md5 = require("md5");
-router.post("/login", async (req, res, next) => {
-  let { username, password, verify } = { ...req.body };
+const { generateToken } = require("../tools/token");
 
+router.post("/login", async (req, res) => {
+  let { username, password, verify } = { ...req.body };
   if (!username || !password || !verify) {
-    res.status(401).json({
+    res.status(500).json({
       message: "必填项未输入",
     });
     return;
   }
-  if (!req.session.captcha) {
-    res.status(500).json({
-      message: "验证码已过期",
-    });
-    return;
-  }
+
+  const captchaList = await CaptchaModel.find()
+    .limit(1)
+    .sort({ created_time: -1 });
   // 校验验证码
-  if (verify.toLocaleLowerCase() !== req.session.captcha.toLocaleLowerCase()) {
-    res.status(401).json({
+  if (
+    verify.toLocaleLowerCase() !== captchaList[0].captcha.toLocaleLowerCase()
+  ) {
+    res.status(500).json({
       message: "验证码无效",
     });
     return;
@@ -34,12 +36,17 @@ router.post("/login", async (req, res, next) => {
     }
   );
   if (result) {
-    req.session.userinfo = result[0];
-    res.send({
-      message: "登录成功",
+    let token = generateToken({
+      _id: result._id,
+    });
+    res.json({
+      success: true,
+      data: {
+        token,
+      },
     });
   } else {
-    res.status(404).send({
+    res.status(500).json({
       message: "用户不存在",
     });
   }

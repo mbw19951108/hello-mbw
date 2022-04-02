@@ -4,7 +4,8 @@
     <div class="left">
       <a-menu class="left__menu"
               mode="inline">
-        <a-button type="primary"
+        <a-button class="left__btn"
+                  type="primary"
                   @click="onCreateCategory()">
           <template #icon>
             <plus-outlined />
@@ -33,7 +34,8 @@
     </div>
     <!-- 文章列表 -->
     <div class="mid">
-      <a-button type="primary"
+      <a-button class="mid__btn"
+                type="primary"
                 @click="onCreateArticle()">
         <template #icon>
           <plus-outlined />
@@ -48,7 +50,7 @@
         <div class="mid__list__title">
           <a-tooltip placement="topLeft">
             <template #title>{{article.title}}</template>
-            {{article.title}}
+            <span :class="{'mid__list__title-unpublish': !article.is_show}">{{article.title}}</span>
           </a-tooltip>
         </div>
         <edit-outlined class="mid__list__icon-edit"
@@ -235,7 +237,6 @@ export default defineComponent({
       formdata.append("image", $file);
       try {
         const { data } = await FileService.upload(formdata);
-        console.log(data);
         (md.value as any).$img2Url(
           pos,
           process.env.VUE_APP_API_URL + data.path
@@ -432,6 +433,9 @@ export default defineComponent({
     min-width: 220px;
   }
   .left {
+    &__btn {
+      margin: 10px 24px 0;
+    }
     &__menu {
       height: 100%;
 
@@ -456,9 +460,12 @@ export default defineComponent({
     }
   }
   .mid {
+    &__btn {
+      margin: 10px 24px 0;
+    }
     &__list {
       height: 40px;
-      padding: 10px;
+      padding: 10px 24px;
       line-height: 20px;
       position: relative;
       cursor: pointer;
@@ -466,18 +473,21 @@ export default defineComponent({
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        max-width: 150px;
+        max-width: 130px;
+      }
+      &__title-unpublish {
+        opacity: 0.3;
       }
       &__icon-edit {
         display: none;
         position: absolute;
-        right: 30px;
+        right: 44px;
         top: 14px;
       }
       &__icon-delete {
         display: none;
         position: absolute;
-        right: 10px;
+        right: 24px;
         top: 14px;
       }
       &__publish,

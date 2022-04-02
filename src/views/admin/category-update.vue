@@ -53,7 +53,7 @@ export default {
           },
           {
             max: 5,
-            message: "最多不超过五位",
+            message: "最多不超过5位",
           },
         ],
       })
@@ -70,15 +70,18 @@ export default {
 
     const updateCategory = async (body: CategoryUpdateBody) => {
       try {
+        loading.value = true;
         const { success } = await CategoryService.update(
           props.categoryId,
           body
         );
         if (success) {
+          loading.value = false;
           message.success("编辑成功");
           emit("success");
         }
       } catch (error: any) {
+        loading.value = false;
         message.error(error.message);
       }
     };

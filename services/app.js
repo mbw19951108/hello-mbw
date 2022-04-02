@@ -1,8 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-// const bodyParser = require('body-parser')
-// const ejs = require("ejs");
 //引入外部模块
 const user = require("./routes/user");
 const login = require("./routes/login");
@@ -11,33 +9,9 @@ const category = require("./routes/category");
 const article = require("./routes/article");
 const file = require("./routes/file");
 const cors = require("cors");
+const { needVerify, verifyToken } = require("./tools/token");
 
 const app = express();
-//配置模板引擎
-// app.engine("html",ejs.__express)
-// app.set("view engine","html")
-//配置静态web目录
-// app.use(express.static("static"))
-//配置第三方中间件获取post提交的数据
-// app.use(bodyParser.urlencoded({ extended: false }))
-// app.use(bodyParser.json())
-
-//判断用户有没有登录
-// router.use((req, res, next) => {
-//   var pathname = url.parse(req.url).pathname;
-//   if (req.session.userinfo && req.session.userinfo.username) {
-//     next();
-//   } else {
-//     if (pathname == "/login" || pathname == "/captcha") {
-//       next();
-//     } else {
-//       res.status(500).send({
-//         message: "当前用户未登录",
-//       });
-//       return;
-//     }
-//   }
-// });
 // 跨域
 app.use(cors());
 // 配置session的中间件
@@ -57,7 +31,21 @@ app.use(
 // 配置第三方中间件获取post提交的数据
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+// 校验token
+app.use(async (req, res, next) => {
+  if (needVerify(req.url, req.method)) {
+    const result = await verifyToken(req.headers.token);
+    if (result._id) {
+      next();
+    } else {
+      res.status(401).json({
+        message: "token失效，请重新登录",
+      });
+    }
+  } else {
+    next();
+  }
+});
 // 配置外部路由模块
 app.use("/", user);
 app.use("/", login);

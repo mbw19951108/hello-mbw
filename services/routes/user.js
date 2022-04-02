@@ -17,19 +17,31 @@ router
     };
 
     if (!username || !password) {
-      res.status(400).json({
+      res.status(500).json({
         message: "用户名密码不能为空",
       });
       return;
     }
     if (password.length < 6) {
-      res.status(400).json({
+      res.status(500).json({
         message: "密码长度不能小于6位",
       });
       return;
     }
+    if (username.length > 20) {
+      res.status(500).json({
+        message: "用户名长度不能大于20位",
+      });
+      return;
+    }
+    if (password.length > 20) {
+      res.status(500).json({
+        message: "密码长度不能大于20位",
+      });
+      return;
+    }
     if (type && (type !== "manager" || type !== "user")) {
-      res.status(400).json({
+      res.status(500).json({
         message: "用户类型不正确",
       });
       return;
@@ -37,7 +49,7 @@ router
 
     const user = await UserModel.find({ username: username });
     if (user[0]) {
-      res.status(400).json({
+      res.status(500).json({
         message: "当前用户已存在",
       });
       return;
@@ -64,7 +76,7 @@ router
         data: result,
       });
     } else {
-      res.status(404).json({
+      res.status(500).json({
         message: "当前用户不存在",
       });
     }
@@ -81,7 +93,7 @@ router
     if (result) {
       res.end();
     } else {
-      res.status(404).json({
+      res.status(500).json({
         message: "当前用户不存在",
       });
     }
@@ -93,7 +105,7 @@ router
         message: "删除成功",
       });
     } else {
-      res.status(404).json({
+      res.status(500).json({
         message: "当前用户不存在",
       });
     }

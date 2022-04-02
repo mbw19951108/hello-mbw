@@ -92,7 +92,6 @@
                      :categoryId="selectCategoryId"
                      @success="onCategorySuccess()"></category-update>
     <article-update v-if="modalType === ModalType.articleUpdate"
-                    :categoryId="selectCategoryId"
                     :articleId="selectArticleId"
                     @success="onArticleSuccess()"></article-update>
   </a-modal>
@@ -118,7 +117,6 @@ import CategoryUpdate from "./category-update.vue";
 import ArticleUpdate from "./article-update.vue";
 import { ArticleModel, CategoryModel } from "@/api/models";
 import moment from "moment";
-import _ from "lodash";
 
 export enum ModalType {
   articleUpdate = "articleUpdate",
@@ -178,8 +176,9 @@ export default defineComponent({
     // 获取文章
     const searchArticles = async (categoryId: string) => {
       try {
-        const { data } = await ArticleService.search(categoryId, {
+        const { data } = await ArticleService.searchByCategoryId(categoryId, {
           pageable: 0,
+          showAll: true,
         });
         articleList.value = data;
       } catch (error: any) {
@@ -189,10 +188,7 @@ export default defineComponent({
     // 获取文章详情
     const getArticleDetail = async (articleId: string) => {
       try {
-        const { data } = await ArticleService.detail(
-          selectCategoryId.value!,
-          articleId
-        );
+        const { data } = await ArticleService.detail(articleId);
         articleDetail.value = data;
         mdcontent.value = data.mdcontent || "";
       } catch (error: any) {
@@ -266,11 +262,7 @@ export default defineComponent({
         mdcontent: value,
       };
       try {
-        await ArticleService.update(
-          selectCategoryId.value!,
-          selectArticleId.value!,
-          body
-        );
+        await ArticleService.update(selectArticleId.value!, body);
       } catch (error: any) {
         message.error(error.message);
       }
@@ -292,10 +284,7 @@ export default defineComponent({
     // 删除文章
     const onDelArticle = async (articleId: string) => {
       try {
-        const { success } = await ArticleService.delete(
-          selectCategoryId.value!,
-          articleId
-        );
+        const { success } = await ArticleService.delete(articleId);
         if (success) {
           searchArticles(selectCategoryId.value!);
           selectArticleId.value = "";
@@ -319,6 +308,7 @@ export default defineComponent({
         return;
       }
       selectCategoryId.value = categoryId;
+      selectArticleId.value = "";
       searchArticles(categoryId);
     };
     // 创建文章
@@ -342,17 +332,12 @@ export default defineComponent({
     };
     // 发布文章
     const onPublish = async () => {
-      if (!selectCategoryId.value) {
-        message.warning("请选择文章分类");
-        return;
-      }
       if (!selectArticleId.value) {
         message.warning("请选择文章");
         return;
       }
       try {
         const { success } = await ArticleService.publish(
-          selectCategoryId.value!,
           selectArticleId.value!
         );
         if (success) {
@@ -365,17 +350,12 @@ export default defineComponent({
     };
     // 取消发布文章
     const onUnpublish = async () => {
-      if (!selectCategoryId.value) {
-        message.warning("请选择文章分类");
-        return;
-      }
       if (!selectArticleId.value) {
         message.warning("请选择文章");
         return;
       }
       try {
         const { success } = await ArticleService.unpublish(
-          selectCategoryId.value!,
           selectArticleId.value!
         );
         if (success) {
@@ -513,9 +493,9 @@ export default defineComponent({
       z-index: auto;
     }
   }
-}
 
-::v-deep .ant-menu-title-content {
-  position: relative;
+  ::v-deep .ant-menu-title-content {
+    position: relative;
+  }
 }
 </style>

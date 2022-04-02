@@ -4,19 +4,13 @@ import authGuard from "./guards/auth.guard";
 export const menuRoutes: Array<RouteRecordRaw> = [
   {
     path: "",
-    redirect: { name: "Personal" },
+    redirect: { name: "Development" },
   },
   {
-    path: "/personal",
-    name: "Personal",
-    component: () => import("@/views/personal/Personal.vue"),
-    meta: { title: "历程" },
-  },
-  {
-    path: "/work",
-    name: "Work",
-    component: () => import("@/views/work/Work.vue"),
-    meta: { title: "历程" },
+    path: "/development",
+    name: "Development",
+    component: () => import("@/views/development/development.vue"),
+    meta: { title: "开发" },
   },
   {
     path: "/photography",
@@ -54,6 +48,6 @@ export const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: { name: "Personal" },
+    redirect: { name: "Development" },
   },
 ];

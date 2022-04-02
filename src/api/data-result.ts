@@ -10,5 +10,10 @@ export interface DataServiceError {
 export interface DataServiceResult<T> extends AxiosResponse<T> {
   error?: DataServiceError;
   data?: any;
+  meta?: {
+    pageNo: number;
+    pageSize: number;
+    total: number;
+  };
   success?: boolean;
 }

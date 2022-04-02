@@ -1,27 +1,36 @@
 <template>
-  <a-form layout="vertical">
-    <a-form-item v-bind="validateInfos.username"
-                 label="用户名">
-      <a-input v-model:value="modelRef.username"></a-input>
-    </a-form-item>
-    <a-form-item v-bind="validateInfos.password"
-                 label="密码">
-      <a-input v-model:value="modelRef.password"
-               type="password"></a-input>
-    </a-form-item>
-    <a-form-item v-bind="validateInfos.verify"
-                 label="图形验证码">
-      <a-input v-model:value="modelRef.verify"></a-input>
-    </a-form-item>
-    <div class="captcha"
-         @click="getCaptcha()"
-         v-html="captchaSvg"></div>
-    <a-button :loading="loading"
-              type="primary"
-              @click="onSubmit">
-      提交
-    </a-button>
-  </a-form>
+  <div class="form">
+    <a-form layout="vertical"
+            class="form__container">
+      <a-form-item v-bind="validateInfos.username"
+                   label="用户名">
+        <a-input v-model:value="modelRef.username"></a-input>
+      </a-form-item>
+      <a-form-item v-bind="validateInfos.password"
+                   label="密码">
+        <a-input v-model:value="modelRef.password"
+                 type="password"></a-input>
+      </a-form-item>
+      <a-form-item v-bind="validateInfos.verify"
+                   label="图形验证码">
+        <div class="form__captcha-container">
+          <a-input v-model:value="modelRef.verify"></a-input>
+          <div class="captcha"
+               @click="getCaptcha()"
+               v-html="captchaSvg"></div>
+        </div>
+      </a-form-item>
+      <a-form-item>
+        <a-button :loading="loading"
+                  type="primary"
+                  block
+                  @click="onSubmit">
+          登录
+        </a-button>
+      </a-form-item>
+
+    </a-form>
+  </div>
 </template>
 <script lang="ts">
 import { Form, Input, message } from "ant-design-vue";
@@ -129,8 +138,23 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.captcha {
-  width: 150px;
-  height: 50px;
+.form {
+  width: 500px;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  &__container {
+    flex: auto;
+  }
+  &__captcha-container {
+    display: flex;
+    align-items: flex-start;
+    .captcha {
+      width: 150px;
+      height: 50px;
+      flex-shrink: 0;
+    }
+  }
 }
 </style>

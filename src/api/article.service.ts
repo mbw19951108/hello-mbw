@@ -2,18 +2,22 @@ import http from "./http-client";
 import { ArticleCreateBody, ArticleUpdateBody, PageQueryModel } from "./models";
 import * as qs from "qs";
 
+interface articlePageQueryModel extends PageQueryModel {
+  showAll?: boolean; // 是否展示未发布文章
+  pageable?: number; // 是否启用分页查询（仅限后台管理页面使用）
+}
+
 export const ArticleService = {
+  search: (query?: articlePageQueryModel) =>
+    http.get(`/article?${qs.stringify(query)}`),
   create: (body: ArticleCreateBody) => http.post(`/article`, body),
-  search: (categoryId: string, query?: PageQueryModel) =>
+  detail: (articleId: string) => http.get(`/article/${articleId}`),
+  update: (articleId: string, body: ArticleUpdateBody) =>
+    http.patch(`/article/${articleId}`, body),
+  delete: (articleId: string) => http.delete(`/article/${articleId}`),
+  publish: (articleId: string) => http.patch(`/article/${articleId}/publish`),
+  unpublish: (articleId: string) =>
+    http.patch(`/article/${articleId}/unpublish`),
+  searchByCategoryId: (categoryId: string, query?: articlePageQueryModel) =>
     http.get(`/category/${categoryId}/article?${qs.stringify(query)}`),
-  detail: (categoryId: string, articleId: string) =>
-    http.get(`/category/${categoryId}/article/${articleId}`),
-  update: (categoryId: string, articleId: string, body: ArticleUpdateBody) =>
-    http.patch(`/category/${categoryId}/article/${articleId}`, body),
-  delete: (categoryId: string, articleId: string) =>
-    http.delete(`/category/${categoryId}/article/${articleId}`),
-  publish: (categoryId: string, articleId: string) =>
-    http.patch(`/category/${categoryId}/article/${articleId}/publish`),
-  unpublish: (categoryId: string, articleId: string) =>
-    http.patch(`/category/${categoryId}/article/${articleId}/unpublish`),
 };

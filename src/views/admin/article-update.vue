@@ -25,11 +25,6 @@ export default {
     [Input.name]: Input,
   },
   props: {
-    categoryId: {
-      type: String,
-      required: true,
-      default: () => "",
-    },
     articleId: {
       type: String,
       required: true,
@@ -71,11 +66,7 @@ export default {
     const updateArticle = async (body: ArticleUpdateBody) => {
       try {
         loading.value = true;
-        const { success } = await ArticleService.update(
-          props.categoryId,
-          props.articleId,
-          body
-        );
+        const { success } = await ArticleService.update(props.articleId, body);
         if (success) {
           loading.value = false;
           message.success("编辑成功");

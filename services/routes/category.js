@@ -27,7 +27,7 @@ router
     });
   })
   .post(async (req, res) => {
-    const { title, parentId, description, sort } = {
+    const { title, parent_id, description, sort } = {
       ...req.body,
     };
 
@@ -36,11 +36,11 @@ router
         message: "分类名称不能为空",
       });
     }
-
-    if (parentId) {
-      parent_id = mongoose.Types.ObjectId(parentId);
+    let new_parent_id;
+    if (parent_id) {
+      new_parent_id = mongoose.Types.ObjectId(parent_id);
     } else {
-      parent_id = 0;
+      new_parent_id = 0;
     }
 
     if (sort && typeof sort !== "number") {
@@ -51,7 +51,7 @@ router
 
     const newCategory = new CategoryModel({
       title,
-      parent_id,
+      parent_id: new_parent_id,
       description,
       sort,
     });

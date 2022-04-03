@@ -6,8 +6,8 @@ const mongoose = require("../model/core");
 router
   .route("/article")
   .get(async (req, res) => {
-    const pageNo = req.query.pageNo || 1;
-    const pageSize = req.query.pageSize || 10;
+    const pageNo = parseInt(req.query.pageNo) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
     const params = {
       is_show: true,
     };
@@ -54,8 +54,8 @@ router
 
 // 文章列表
 router.route("/category/:categoryId/article").get(async (req, res) => {
-  const pageNo = req.query.pageNo || 1;
-  const pageSize = req.query.pageSize || 10;
+  const pageNo = parseInt(req.query.pageNo) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
   const pageable = req.query.pageable;
   const showAll = req.query.showAll;
   const category_id = mongoose.Types.ObjectId(req.params.categoryId);

@@ -31,6 +31,7 @@ export default {
 </script>
 
 <style lang="less">
+@import "src/styles/variables.less";
 #app {
   height: 100%;
   position: relative;

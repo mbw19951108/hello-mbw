@@ -20,6 +20,10 @@ const whiteUrls = [
     url: "/article",
     method: "GET",
   },
+  {
+    url: "/upload",
+    method: "GET",
+  },
 ];
 
 const token = {

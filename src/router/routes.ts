@@ -10,19 +10,40 @@ export const menuRoutes: Array<RouteRecordRaw> = [
     path: "/development",
     name: "Development",
     component: () => import("@/views/development/development.vue"),
-    meta: { title: "开发" },
+    meta: { title: "开发", icon: "bulb-outlined" },
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/development/article-list.vue"),
+      },
+      {
+        name: "Articles",
+        path: ":categoryId/articles",
+        component: () => import("@/views/development/article-list.vue"),
+      },
+      {
+        name: "CategoryArticleDetail",
+        path: ":categoryId/article/:articleId",
+        component: () => import("@/views/development/article-detail.vue"),
+      },
+      {
+        name: "ArticleDetail",
+        path: "article/:articleId",
+        component: () => import("@/views/development/article-detail.vue"),
+      },
+    ],
   },
   {
     path: "/photography",
     name: "Photography",
     component: () => import("@/views/photography/Photography.vue"),
-    meta: { title: "摄影" },
+    meta: { title: "摄影", icon: "camera-outlined" },
   },
   {
     path: "/charts",
     name: "Charts",
     component: () => import("@/views/charts/Charts.vue"),
-    meta: { title: "大屏" },
+    meta: { title: "Charts", icon: "dashboard-outlined" },
   },
 ];
 

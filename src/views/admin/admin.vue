@@ -69,12 +69,12 @@
                     @imgAdd="onImgAdd"
                     @save="onSave">
         <template #left-toolbar-after>
-          <span class="mid__list__publish"
-                v-if="!articleDetail?.is_show"
-                @click="onPublish()">发布</span>
-          <span class="mid__list__unpublish"
-                v-if="articleDetail?.is_show"
-                @click="onUnpublish()">取消发布</span>
+          <a class="mid__list__publish"
+             v-if="!articleDetail?.is_show"
+             @click="onPublish()">发布</a>
+          <a class="mid__list__unpublish"
+             v-if="articleDetail?.is_show"
+             @click="onUnpublish()">取消发布</a>
         </template>
       </mavon-editor>
     </div>
@@ -262,7 +262,11 @@ export default defineComponent({
         mdcontent: value,
       };
       try {
-        await ArticleService.update(selectArticleId.value!, body);
+        const { success } = await ArticleService.update(
+          selectArticleId.value!,
+          body
+        );
+        success && message.success("发布成功");
       } catch (error: any) {
         message.error(error.message);
       }
@@ -418,7 +422,6 @@ export default defineComponent({
     }
     &__menu {
       height: 100%;
-
       &__icon-edit {
         display: none;
         position: absolute;
@@ -473,8 +476,6 @@ export default defineComponent({
       &__publish,
       &__unpublish {
         font-size: 14px;
-        margin-left: 10px;
-        cursor: pointer;
       }
     }
     &__list-active {

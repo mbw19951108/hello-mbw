@@ -40,7 +40,7 @@ router
       });
       return;
     }
-    if (type && (type !== "manager" || type !== "user")) {
+    if (type && type !== "manager" && type !== "user") {
       res.status(500).json({
         message: "用户类型不正确",
       });
@@ -64,7 +64,10 @@ router
       created_time: new Date(),
     });
     const result = await newUser.save();
-    result && res.end();
+    result &&
+      res.json({
+        success: true,
+      });
   });
 
 router

@@ -5,7 +5,9 @@
   "scripts": {
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "vue-cli-service serve"
+    "start": "vue-cli-service serve",
+    "release": "scp -r ./dist/* root@49.233.46.59:/www/wwwroot/web",
+    "release:services": "rsync -av -e ssh --exclude=public ./services ./package.json root@49.233.46.59:/www/wwwroot"
   },
   "dependencies": {
     "@types/echarts": "^4.9.13",

@@ -14,21 +14,26 @@ export const menuRoutes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "",
-        component: () => import("@/views/development/article-list.vue"),
+        redirect: { name: "Articles" },
       },
       {
         name: "Articles",
+        path: "articles",
+        component: () => import("@/views/development/article-list.vue"),
+      },
+      {
+        name: "CategoryArticles",
         path: ":categoryId/articles",
         component: () => import("@/views/development/article-list.vue"),
       },
       {
-        name: "CategoryArticleDetail",
-        path: ":categoryId/article/:articleId",
+        name: "ArticleDetail",
+        path: "article/:articleId",
         component: () => import("@/views/development/article-detail.vue"),
       },
       {
-        name: "ArticleDetail",
-        path: "article/:articleId",
+        name: "CategoryArticleDetail",
+        path: ":categoryId/article/:articleId",
         component: () => import("@/views/development/article-detail.vue"),
       },
     ],
@@ -36,7 +41,7 @@ export const menuRoutes: Array<RouteRecordRaw> = [
   {
     path: "/photography",
     name: "Photography",
-    component: () => import("@/views/photography/Photography.vue"),
+    component: () => import("@/views/photography/photography.vue"),
     meta: { title: "摄影", icon: "camera-outlined" },
   },
   {

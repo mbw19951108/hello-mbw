@@ -6,6 +6,10 @@
         <a-menu class="container__layout__sider__menu"
                 mode="inline"
                 :selectedKeys="[selectCategoryId]">
+          <a-menu-item :key="'all'"
+                       @click="onSelectAll()">
+            <span>全部文章</span>
+          </a-menu-item>
           <a-sub-menu :key="category._id"
                       v-for="category in categoryList">
             <template #title>
@@ -46,13 +50,13 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const selectCategoryId = ref<string>(route.params.categoryId as string);
+    const selectCategoryId = ref(route.params.categoryId || "all");
     // 分类列表
     const categoryList = ref<CategoryModel[]>([]);
     watch(
       () => route.path,
       () => {
-        selectCategoryId.value = route.params.categoryId as string;
+        selectCategoryId.value = route.params.categoryId || "all";
       }
     );
     onMounted(() => searchCategories());
@@ -68,21 +72,26 @@ export default defineComponent({
     // 选择分类
     const onSelectCategory = (categoryId: string) => {
       router.push({
-        name: "Articles",
+        name: "CategoryArticles",
         params: { categoryId },
+      });
+    };
+    // 选择全部文章
+    const onSelectAll = () => {
+      router.push({
+        name: "Articles",
       });
     };
     return {
       categoryList,
       selectCategoryId,
       onSelectCategory,
+      onSelectAll,
     };
   },
 });
 </script>
 <style lang="less" scoped>
-@import "~ant-design-vue/lib/style/themes/default.less";
-
 .container {
   padding: 35px 50px;
   height: 100%;

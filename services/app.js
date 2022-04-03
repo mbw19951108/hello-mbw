@@ -8,6 +8,7 @@ const captcha = require("./routes/captcha");
 const category = require("./routes/category");
 const article = require("./routes/article");
 const file = require("./routes/file");
+const photos = require("./routes/photos");
 const cors = require("cors");
 const { needVerify, verifyToken } = require("./tools/token");
 
@@ -54,8 +55,10 @@ app.use("/", captcha);
 app.use("/", category);
 // 文章
 app.use("/", article);
-// 文件上传
+// 文章图片上传
 app.use("/", file);
+// 摄影图片上传
+app.use("/", photos);
 
 // 可访问资源
 app.use(express.static("public"));

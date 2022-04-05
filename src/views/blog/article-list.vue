@@ -58,11 +58,7 @@ export default defineComponent({
     // 文章列表
     const articleList = ref<ArticleModel[]>([]);
     // 分页数据
-    const meta = ref({
-      pageNo: 1,
-      pageSize: 10,
-      total: 0,
-    });
+    const meta = ref({});
     watch(
       () => route.path,
       () => searchArticles()

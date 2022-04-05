@@ -43,7 +43,7 @@ const upload = multer({
   },
 });
 
-const singleUpload = upload.single("image");
+const singleUpload = upload.single("file");
 router.post("/upload", async (req, res) => {
   singleUpload(req, res, (err) => {
     if (err) {

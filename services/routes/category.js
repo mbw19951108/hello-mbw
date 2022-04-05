@@ -22,7 +22,7 @@ router
         },
       },
     ]);
-    res.send({
+    res.json({
       data: result,
     });
   })
@@ -32,7 +32,7 @@ router
     };
 
     if (!title) {
-      res.status(400).json({
+      res.status(500).json({
         message: "分类名称不能为空",
       });
     }
@@ -44,7 +44,7 @@ router
     }
 
     if (sort && typeof sort !== "number") {
-      res.status(400).json({
+      res.status(500).json({
         message: "请求参数格式不正确",
       });
     }
@@ -67,15 +67,10 @@ router
   .get(async (req, res) => {
     const id = mongoose.Types.ObjectId(req.params.categoryId);
     const result = await CategoryModel.findById(id);
-    if (result) {
+    result &&
       res.json({
         data: result,
       });
-    } else {
-      res.status(404).json({
-        message: "当前分类不存在",
-      });
-    }
   })
   .patch(async (req, res) => {
     const id = mongoose.Types.ObjectId(req.params.categoryId);
@@ -84,7 +79,7 @@ router
     };
 
     if (sort && typeof sort !== "number") {
-      res.status(400).json({
+      res.status(500).json({
         message: "请求参数格式不正确",
       });
     }
@@ -96,31 +91,24 @@ router
       sort,
     });
 
-    if (result) {
+    result &&
       res.json({
         success: true,
       });
-    } else {
-      res.status(404).json({
-        message: "当前分类不存在",
-      });
-    }
   })
   .delete(async (req, res) => {
-    const id = mongoose.Types.ObjectId(req.params.categoryId);
+    const category_id = mongoose.Types.ObjectId(req.params.categoryId);
     const childResult = await CategoryModel.find({
-      parent_id: id,
+      parent_id: category_id,
     });
     if (childResult.length > 0) {
-      res.status(400).json({
+      res.status(500).json({
         message: "请先删除子分类",
       });
     } else {
-      const articleResult = await ArticleModel.find({
-        category_id: id,
-      });
+      const articleResult = await ArticleModel.find({ category_id });
       if (articleResult.length > 0) {
-        res.status(400).json({
+        res.status(500).json({
           message: "请先删除该分类下的文章",
         });
       } else {
@@ -130,7 +118,7 @@ router
             success: true,
           });
         } else {
-          res.status(400).json({
+          res.status(500).json({
             message: "当前分类不存在",
           });
         }

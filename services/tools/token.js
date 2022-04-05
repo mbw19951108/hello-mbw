@@ -24,6 +24,14 @@ const whiteUrls = [
     url: "/upload",
     method: "GET",
   },
+  {
+    url: "/photography",
+    method: "GET",
+  },
+  {
+    url: "/photo",
+    method: "GET",
+  },
 ];
 
 const token = {

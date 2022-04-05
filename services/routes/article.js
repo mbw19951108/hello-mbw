@@ -11,8 +11,7 @@ router
     const params = {
       is_show: true,
     };
-    let result = null;
-    result = await ArticleModel.find(params, { content: 0, mdcontent: 0 })
+    const result = await ArticleModel.find(params, { content: 0, mdcontent: 0 })
       .skip((pageNo - 1) * pageSize)
       .limit(pageSize)
       .sort({ created_time: -1 });
@@ -65,7 +64,7 @@ router.route("/category/:categoryId/article").get(async (req, res) => {
   } else {
     params = { is_show: true, category_id };
   }
-  let result = null;
+  let result;
   if (pageable === "0") {
     result = await ArticleModel.find(params, { content: 0, mdcontent: 0 }).sort(
       { created_time: -1 }
@@ -76,9 +75,8 @@ router.route("/category/:categoryId/article").get(async (req, res) => {
       .limit(pageSize)
       .sort({ created_time: -1 });
   }
-  const total = await (
-    await ArticleModel.find(params, { content: 0, mdcontent: 0 })
-  ).length;
+  const total = (await ArticleModel.find(params, { content: 0, mdcontent: 0 }))
+    .length;
   res.json({
     data: result,
     meta: {
@@ -92,14 +90,10 @@ router.route("/category/:categoryId/article").get(async (req, res) => {
 router
   .route("/article/:articleId")
   .get(async (req, res) => {
-    const article_id = mongoose.Types.ObjectId(req.params.articleId);
-    const { click_count } = await ArticleModel.findOne({
-      _id: article_id,
-    });
+    const _id = mongoose.Types.ObjectId(req.params.articleId);
+    const { click_count } = await ArticleModel.findOne({ _id });
     const result = await ArticleModel.findOneAndUpdate(
-      {
-        _id: article_id,
-      },
+      { _id },
       {
         click_count: click_count + 1,
       }
@@ -109,15 +103,13 @@ router
     });
   })
   .patch(async (req, res) => {
-    const article_id = mongoose.Types.ObjectId(req.params.articleId);
+    const _id = mongoose.Types.ObjectId(req.params.articleId);
     const { title, keywords, content, mdcontent, is_show } = {
       ...req.body,
     };
 
     const result = await ArticleModel.findOneAndUpdate(
-      {
-        _id: article_id,
-      },
+      { _id },
       {
         title,
         keywords,
@@ -128,74 +120,47 @@ router
       }
     );
 
-    if (result) {
+    result &&
       res.json({
         success: true,
       });
-    } else {
-      res.status(500).json({
-        message: "当前文章不存在",
-      });
-    }
   })
   .delete(async (req, res) => {
-    const article_id = mongoose.Types.ObjectId(req.params.articleId);
-
-    const result = await ArticleModel.deleteOne({
-      _id: article_id,
-    });
-    if (result) {
+    const _id = mongoose.Types.ObjectId(req.params.articleId);
+    const result = await ArticleModel.deleteOne({ _id });
+    result &&
       res.json({
         success: true,
       });
-    } else {
-      res.status(500).json({
-        message: "当前文章不存在",
-      });
-    }
   });
 
 router.route("/article/:articleId/publish").patch(async (req, res) => {
-  const article_id = mongoose.Types.ObjectId(req.params.articleId);
+  const _id = mongoose.Types.ObjectId(req.params.articleId);
   const result = await ArticleModel.findOneAndUpdate(
-    {
-      _id: article_id,
-    },
+    { _id },
     {
       is_show: true,
     }
   );
 
-  if (result) {
+  result &&
     res.json({
       success: true,
     });
-  } else {
-    res.status(500).json({
-      message: "当前文章不存在",
-    });
-  }
 });
 
 router.route("/article/:articleId/unpublish").patch(async (req, res) => {
-  const article_id = mongoose.Types.ObjectId(req.params.articleId);
+  const _id = mongoose.Types.ObjectId(req.params.articleId);
   const result = await ArticleModel.findOneAndUpdate(
-    {
-      _id: article_id,
-    },
+    { _id },
     {
       is_show: false,
     }
   );
 
-  if (result) {
+  result &&
     res.json({
       success: true,
     });
-  } else {
-    res.status(500).json({
-      message: "当前文章不存在",
-    });
-  }
 });
 module.exports = router;

@@ -35,7 +35,7 @@ export default {
   setup(props: any, { emit }: SetupContext) {
     const loading = ref(false);
     const modelRef = reactive({
-      title: "",
+      title: null,
     });
     const { validate, validateInfos } = useForm(
       modelRef,

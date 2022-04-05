@@ -73,45 +73,35 @@ router
 router
   .route("/user/:userId")
   .get(async (req, res) => {
-    const result = await UserModel.findById(req.params.userId);
-    if (result) {
+    const _id = mongoose.Types.ObjectId(req.params.userId);
+    const result = await UserModel.findById(_id);
+    result &&
       res.json({
         data: result,
       });
-    } else {
-      res.status(500).json({
-        message: "当前用户不存在",
-      });
-    }
   })
   .patch(async (req, res) => {
+    const _id = mongoose.Types.ObjectId(req.params.userId);
     const { name, email, mobile } = {
       ...req.body,
     };
-    const result = await UserModel.findByIdAndUpdate(req.params.userId, {
+    const result = await UserModel.findByIdAndUpdate(_id, {
       name,
       email,
       mobile,
     });
-    if (result) {
-      res.end();
-    } else {
-      res.status(500).json({
-        message: "当前用户不存在",
+    result &&
+      res.json({
+        success: true,
       });
-    }
   })
   .delete(async (req, res) => {
-    const result = await UserModel.findByIdAndDelete(req.params.userId);
-    if (result) {
+    const _id = mongoose.Types.ObjectId(req.params.userId);
+    const result = await UserModel.findByIdAndDelete(_id);
+    result &&
       res.json({
-        message: "删除成功",
+        success: true,
       });
-    } else {
-      res.status(500).json({
-        message: "当前用户不存在",
-      });
-    }
   });
 
 module.exports = router;

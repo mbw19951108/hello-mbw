@@ -7,8 +7,10 @@ const login = require("./routes/login");
 const captcha = require("./routes/captcha");
 const category = require("./routes/category");
 const article = require("./routes/article");
+const photography = require("./routes/photography");
 const file = require("./routes/file");
-const photos = require("./routes/photos");
+const photo = require("./routes/photo");
+
 const cors = require("cors");
 const { needVerify, verifyToken } = require("./tools/token");
 
@@ -49,16 +51,20 @@ app.use(async (req, res, next) => {
 });
 // 配置外部路由模块
 app.use("/", user);
+// 登录
 app.use("/", login);
+// 图形验证码
 app.use("/", captcha);
 // 文章分类
 app.use("/", category);
 // 文章
 app.use("/", article);
+// 摄影
+app.use("/", photography);
 // 文章图片上传
 app.use("/", file);
 // 摄影图片上传
-app.use("/", photos);
+app.use("/", photo);
 
 // 可访问资源
 app.use(express.static("public"));

@@ -1,17 +1,22 @@
 <template>
-  <a-layout class="layout-container">
-    <a-layout-header class="header">
-      <a-menu :selectedKeys="selectedKeys"
+  <a-layout class="layout">
+    <a-layout-header class="layout__header">
+      <img class="layout__header__logo"
+           src="../../static/logo.jpg"
+           alt="">
+      <a-menu class="layout__header__menu"
+              :selectedKeys="selectedKeys"
               theme="dark"
               mode="horizontal">
         <a-menu-item v-for="route in filterRoutes()"
                      :key="route.name">
           <router-link :to="{ path: route.path }">
             <component :is="route.meta.icon" />
-            <span>{{route.meta.title}}</span>
+            <span>{{route.meta?.title}}</span>
           </router-link>
         </a-menu-item>
       </a-menu>
+      <div class="layout__header__text">A Photographer, A Programmer!</div>
     </a-layout-header>
     <a-layout-content>
       <router-view />
@@ -34,7 +39,6 @@ export default defineComponent({
     [Layout.name]: Layout,
     [Layout.Header.name]: Layout.Header,
     [Layout.Content.name]: Layout.Content,
-    [Layout.Sider.name]: Layout.Sider,
     [Menu.name]: Menu,
     [Menu.Item.name]: Menu.Item,
     [Menu.SubMenu.name]: Menu.SubMenu,
@@ -48,12 +52,13 @@ export default defineComponent({
     const route = useRoute();
     // 顶部导航选中状态
     const selectedKeys = ref<string[]>([]);
-    watchEffect(() => (selectedKeys.value = [route.matched[1].name as string]));
+    watchEffect(
+      () => (selectedKeys.value = [route.matched[1]?.name as string])
+    );
     const filterRoutes = () =>
       menuRoutes.filter((route) => {
         if (!route.redirect) return true;
       });
-    console.log(selectedKeys);
     return {
       selectedKeys,
       filterRoutes,
@@ -62,7 +67,25 @@ export default defineComponent({
 });
 </script>
 <style lang="less" scoped>
-.layout-container {
+.layout {
   height: 100%;
+  &__header {
+    display: flex;
+    align-items: center;
+    &__logo {
+      width: 150px;
+      height: 25px;
+      margin-right: 30px;
+    }
+    &__menu {
+      flex-grow: 1;
+    }
+    &__text {
+      color: #fff;
+      opacity: 0.65;
+      font-size: 16px;
+      font-style: italic;
+    }
+  }
 }
 </style>

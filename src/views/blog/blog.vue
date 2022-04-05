@@ -37,7 +37,7 @@ import { CategoryModel } from "@/api/models";
 import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "Development",
+  name: "Blog",
   components: {
     [Layout.name]: Layout,
     [Layout.Header.name]: Layout.Header,

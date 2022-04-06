@@ -93,7 +93,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .container {
-  padding: 35px 50px;
+  padding: 35px 160px;
   height: 100%;
   &__layout {
     height: 100%;

@@ -76,7 +76,8 @@
                v-if="photography.desc">
             <span>{{photography.desc}}</span>
           </div>
-          <a-popconfirm title="确定删除么？"
+          <a-popconfirm v-if="photography._id"
+                        title="确定删除么？"
                         @confirm="onDelPhotography(photography._id)">
             <delete-outlined class="mid__list__icon-delete" />
           </a-popconfirm>

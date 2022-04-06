@@ -2,7 +2,7 @@
   <a-layout class="layout">
     <a-layout-header class="layout__header">
       <img class="layout__header__logo"
-           src="../../static/logo.jpg"
+           src="../../assets/logo.jpg"
            alt="">
       <a-menu class="layout__header__menu"
               :selectedKeys="selectedKeys"

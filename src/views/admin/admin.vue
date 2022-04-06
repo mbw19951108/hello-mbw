@@ -2,7 +2,7 @@
   <a-layout class="layout">
     <a-layout-sider>
       <div class="logo">
-        <img src="../../static/logo.jpg"
+        <img src="../../assets/logo.jpg"
              alt="">
       </div>
       <a-menu v-model:selectedKeys="selectedKeys"

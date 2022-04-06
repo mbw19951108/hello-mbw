@@ -5,12 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>A Photographer, A Programmer!</title>
+    <title>PPDOUBLE!</title>
     <style>#live2dcanvas {
       border: 0 !important;
     }</style>
   </head>
   <body>
+    <script src="live2dw/lib/L2Dwidget.min.js"></script>
+    <script type="text/javascript">
+      L2Dwidget.init({
+        "model": {
+          "jsonPath": "live2dw/live2d-widget-model-koharu/assets/koharu.model.json"
+        },
+        "display": {
+              "width": 180,
+              "height": 360,
+              "hOffset": -10,
+              "vOffset": -50
+          }
+      });
+  </script>
     <noscript>
       <strong>We're sorry but ppdouble doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>

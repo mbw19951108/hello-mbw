@@ -4,7 +4,6 @@ export function commonErrorHandler(error: any) {
   if (error?.response?.status === 401) {
     localStorage.removeItem("token");
     router.replace("/login");
-    return;
   }
   const errorBody = {
     message: error?.response?.data?.message || "",

@@ -1,18 +1,17 @@
 <template>
   <a-layout class="layout">
     <a-layout-header class="layout__header">
-      <img class="layout__header__logo"
-           src="../../assets/logo.jpg"
-           alt="">
-      <a-menu class="layout__header__menu"
-              :selectedKeys="selectedKeys"
-              theme="dark"
-              mode="horizontal">
-        <a-menu-item v-for="route in filterRoutes()"
-                     :key="route.name">
+      <img class="layout__header__logo" src="../../assets/logo.jpg" alt="logo" />
+      <a-menu
+        class="layout__header__menu"
+        :selectedKeys="selectedKeys"
+        theme="dark"
+        mode="horizontal"
+      >
+        <a-menu-item v-for="route in filterRoutes()" :key="route.name">
           <router-link :to="{ path: route.path }">
             <component :is="route.meta.icon" />
-            <span>{{route.meta?.title}}</span>
+            <span>{{ route.meta?.title }}</span>
           </router-link>
         </a-menu-item>
       </a-menu>
@@ -31,8 +30,8 @@ import {
   CameraOutlined,
   DashboardOutlined,
 } from "@ant-design/icons-vue";
-import { menuRoutes } from "@/router/routes";
 import { useRoute } from "vue-router";
+import { menuRoutes } from "@/router/routes";
 
 export default defineComponent({
   components: {

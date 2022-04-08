@@ -1,13 +1,13 @@
 <template>
   <div class="detail">
     <a-spin :spinning="loading">
-      <a-page-header class="detail__header"
-                     :title="articleDetail?.title"
-                     @back="onBack()">
+      <a-page-header class="detail__header" :title="articleDetail?.title" @back="onBack()">
         <template #subTitle>
           <div class="detail__header__subTitle">
             <calendar-outlined />
-            <span class="detail__header__subTitle__text">{{ moment(articleDetail?.created_time).format("YYYY-MM-DD") }}</span>
+            <span
+              class="detail__header__subTitle__text"
+            >{{ moment(articleDetail?.created_time).format("YYYY-MM-DD") }}</span>
           </div>
           <div class="detail__header__subTitle">
             <eye-outlined />
@@ -16,8 +16,7 @@
         </template>
       </a-page-header>
     </a-spin>
-    <div class="detail__content"
-         v-html="articleDetail?.content"></div>
+    <div class="detail__content markdown-body" v-html="articleDetail?.content"></div>
   </div>
 </template>
 <script lang="ts">
@@ -28,6 +27,7 @@ import { ArticleService } from "@/api";
 import { ArticleModel } from "@/api/models";
 import moment from "moment";
 import { useRoute } from "vue-router";
+import mavonEditor from "mavon-editor";
 
 export default defineComponent({
   name: "ArticleDetail",
@@ -36,6 +36,7 @@ export default defineComponent({
     [Spin.name]: Spin,
     EyeOutlined,
     CalendarOutlined,
+    mavonEditor,
   },
   setup() {
     const route = useRoute();

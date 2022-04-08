@@ -1,45 +1,31 @@
 <template>
   <div class="form">
-    <a-form layout="vertical"
-            class="form__container">
-      <a-form-item v-bind="validateInfos.username"
-                   label="用户名">
+    <a-form layout="vertical" class="form__container">
+      <a-form-item v-bind="validateInfos.username" label="用户名">
         <a-input v-model:value="modelRef.username"></a-input>
       </a-form-item>
-      <a-form-item v-bind="validateInfos.password"
-                   label="密码">
-        <a-input v-model:value="modelRef.password"
-                 type="password"></a-input>
+      <a-form-item v-bind="validateInfos.password" label="密码">
+        <a-input v-model:value="modelRef.password" type="password"></a-input>
       </a-form-item>
-      <a-form-item v-bind="validateInfos.verify"
-                   label="图形验证码">
+      <a-form-item v-bind="validateInfos.verify" label="图形验证码">
         <div class="form__captcha-container">
           <a-input v-model:value="modelRef.verify"></a-input>
-          <div class="captcha"
-               @click="getCaptcha()"
-               v-html="captchaSvg"></div>
+          <div class="captcha" @click="getCaptcha()" v-html="captchaSvg"></div>
         </div>
       </a-form-item>
       <a-form-item>
-        <a-button :loading="loading"
-                  type="primary"
-                  block
-                  @click="onSubmit">
-          登录
-        </a-button>
+        <a-button :loading="loading" type="primary" block @click="onSubmit">登录</a-button>
       </a-form-item>
-
     </a-form>
   </div>
 </template>
 <script lang="ts">
 import { Form, Input, message } from "ant-design-vue";
-import { onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { useForm } from "ant-design-vue/lib/form";
 import { AuthService, LoginBody } from "@/api";
 import { useRouter } from "vue-router";
-export default {
-  name: "Login",
+export default defineComponent({
   components: {
     [Form.name]: Form,
     [Form.Item.name]: Form.Item,
@@ -135,7 +121,7 @@ export default {
       onSubmit,
     };
   },
-};
+});
 </script>
 <style lang="less" scoped>
 .form {

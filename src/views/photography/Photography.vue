@@ -1,41 +1,35 @@
 <template>
   <div class="photography">
-    <a-timeline class="photography__timeline"
-                mode="alternate"
-                @scroll="onScroll($event)">
+    <a-timeline class="photography__timeline" mode="alternate" @scroll="onScroll($event)">
       <a-timeline-item>
         <div>
-          I used to think I couldn't lose anyone if I photographed them enough.<br>
-          I used photography to stave off lossBut with the recent deaths of many of my friends.<br>
-          I realized the limits of what can be preserved.<br>
-          我常想，如果我拍了足够的照片，我就不会再失去任何人<br>
-          事实上，我的照片让我看到了我失去了多少
+          I used to think I couldn't lose anyone if I photographed them enough.
+          <br />I used photography to stave off lossBut with the recent deaths of many of my friends.
+          <br />I realized the limits of what can be preserved.
+          <br />我常想，如果我拍了足够的照片，我就不会再失去任何人
+          <br />事实上，我的照片让我看到了我失去了多少
         </div>
         <div class="photography__timeline__desc">
           <span>—— 《东京之爱》南·戈尔丁</span>
         </div>
       </a-timeline-item>
-      <a-timeline-item v-for="photography in photographyList"
-                       :key="photography._id">
+      <a-timeline-item v-for="photography in photographyList" :key="photography._id">
         <a-image-preview-group>
-          <a-image v-for="photo in photography.photos"
-                   :key="photo"
-                   :src="apiUrl + photo" />
+          <a-image v-for="photo in photography.photos" :key="photo" :src="apiUrl + photo" />
         </a-image-preview-group>
         <div v-if="photography.title">
-          <span>{{photography.title}}</span>
+          <span>{{ photography.title }}</span>
         </div>
         <div v-if="photography.date">
           <calendar-outlined class="photography__timeline__icon" />
-          <span>{{moment(photography.date).format("YYYY-MM-DD")}}</span>
+          <span>{{ moment(photography.date).format("YYYY-MM-DD") }}</span>
         </div>
         <div v-if="photography.location">
           <environment-outlined class="photography__timeline__icon" />
-          <span>{{photography.location}}</span>
+          <span>{{ photography.location }}</span>
         </div>
-        <div class="photography__timeline__desc"
-             v-if="photography.desc">
-          <span>{{photography.desc}}</span>
+        <div class="photography__timeline__desc" v-if="photography.desc">
+          <span>{{ photography.desc }}</span>
         </div>
       </a-timeline-item>
     </a-timeline>

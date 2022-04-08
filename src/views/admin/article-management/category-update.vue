@@ -1,23 +1,18 @@
 <template>
   <a-form layout="vertical">
-    <a-form-item v-bind="validateInfos.title"
-                 label="分类名称">
+    <a-form-item v-bind="validateInfos.title" label="分类名称">
       <a-input v-model:value="modelRef.title"></a-input>
     </a-form-item>
-    <a-button :loading="loading"
-              type="primary"
-              @click="onSubmit">
-      提交
-    </a-button>
+    <a-button :loading="loading" type="primary" @click="onSubmit">提交</a-button>
   </a-form>
 </template>
 <script lang="ts">
 import { Form, Input, message } from "ant-design-vue";
-import { reactive, ref, PropType, watchEffect, SetupContext } from "vue";
+import { reactive, ref, defineComponent, watchEffect, SetupContext } from "vue";
 import { useForm } from "ant-design-vue/lib/form";
 import { CategoryUpdateBody, CategoryModel } from "@/api/models";
 import { CategoryService } from "@/api";
-export default {
+export default defineComponent({
   name: "CategoryUpdate",
   components: {
     [Form.name]: Form,
@@ -92,5 +87,5 @@ export default {
       onSubmit,
     };
   },
-};
+});
 </script>

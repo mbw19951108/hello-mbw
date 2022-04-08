@@ -2,16 +2,12 @@
   <a-layout class="layout">
     <a-layout-sider>
       <div class="logo">
-        <img src="../../assets/logo.jpg"
-             alt="">
+        <img src="../../assets/logo.jpg" alt="logo" />
       </div>
-      <a-menu v-model:selectedKeys="selectedKeys"
-              theme="dark"
-              mode="inline">
-        <a-menu-item v-for="route in filterRoutes()"
-                     :key="route.name">
+      <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
+        <a-menu-item v-for="route in filterRoutes()" :key="route.name">
           <router-link :to="{ path: route.path }">
-            <span>{{route.meta?.title}}</span>
+            <span>{{ route.meta?.title }}</span>
           </router-link>
         </a-menu-item>
       </a-menu>

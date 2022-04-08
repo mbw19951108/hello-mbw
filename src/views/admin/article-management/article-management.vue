@@ -2,98 +2,97 @@
   <div class="container">
     <!-- 文章分类 -->
     <div class="left">
-      <a-menu class="left__menu"
-              mode="inline">
-        <a-button class="left__btn"
-                  type="primary"
-                  @click="onCreateCategory()">
+      <a-menu class="left__menu" mode="inline">
+        <a-button class="left__btn" type="primary" @click="onCreateCategory()">
           <template #icon>
             <plus-outlined />
           </template>
           新建分类
         </a-button>
-        <a-sub-menu :key="category._id"
-                    v-for="category in categoryList">
+        <a-sub-menu :key="category._id" v-for="category in categoryList">
           <template #title>
-            <span>{{category.title}}</span>
+            <span>{{ category.title }}</span>
           </template>
-          <a-menu-item :key="child._id"
-                       v-for="child in category.children"
-                       @click="onSelectCategory(child._id)">
-            <span>{{child.title}}</span>
-            <edit-outlined class="left__menu__icon-edit"
-                           @click="onEditCategory()" />
-            <a-popconfirm title="确定删除该分类？"
-                          @confirm="onDelCategory(child._id)">
+          <a-menu-item
+            :key="child._id"
+            v-for="child in category.children"
+            @click="onSelectCategory(child._id)"
+          >
+            <span>{{ child.title }}</span>
+            <edit-outlined class="left__menu__icon-edit" @click="onEditCategory()" />
+            <a-popconfirm title="确定删除该分类？" @confirm="onDelCategory(child._id)">
               <delete-outlined class="left__menu__icon-delete" />
             </a-popconfirm>
-
           </a-menu-item>
         </a-sub-menu>
       </a-menu>
     </div>
     <!-- 文章列表 -->
     <div class="mid">
-      <a-button class="mid__btn"
-                type="primary"
-                @click="onCreateArticle()">
+      <a-button class="mid__btn" type="primary" @click="onCreateArticle()">
         <template #icon>
           <plus-outlined />
         </template>
         新建文章
       </a-button>
-      <div class="mid__list"
-           :class="{'mid__list-active': article._id === selectArticleId}"
-           v-for="article in articleList"
-           :key="article._id"
-           @click="onSelectArticle(article._id)">
+      <div
+        class="mid__list"
+        :class="{ 'mid__list-active': article._id === selectArticleId }"
+        v-for="article in articleList"
+        :key="article._id"
+        @click="onSelectArticle(article._id)"
+      >
         <div class="mid__list__title">
           <a-tooltip placement="topLeft">
-            <template #title>{{article.title}}</template>
-            <span :class="{'mid__list__title-unpublish': !article.is_show}">{{article.title}}</span>
+            <template #title>{{ article.title }}</template>
+            <span :class="{ 'mid__list__title-unpublish': !article.is_show }">{{ article.title }}</span>
           </a-tooltip>
         </div>
-        <edit-outlined class="mid__list__icon-edit"
-                       @click="onEditArticle()" />
-        <a-popconfirm title="确定删除该文章？"
-                      @confirm="onDelArticle(article._id)">
+        <edit-outlined class="mid__list__icon-edit" @click="onEditArticle()" />
+        <a-popconfirm title="确定删除该文章？" @confirm="onDelArticle(article._id)">
           <delete-outlined class="mid__list__icon-delete" />
         </a-popconfirm>
       </div>
     </div>
     <!-- markdown编辑器 -->
     <div class="right">
-      <mavon-editor class="right__editor"
-                    v-model="mdcontent"
-                    ref="md"
-                    @imgAdd="onImgAdd"
-                    @save="onSave">
+      <mavon-editor
+        class="right__editor"
+        v-model="mdcontent"
+        ref="md"
+        @imgAdd="onImgAdd"
+        @save="onSave"
+      >
         <template #left-toolbar-after>
-          <a class="mid__list__publish"
-             v-if="!articleDetail?.is_show"
-             @click="onPublish()">发布</a>
-          <a class="mid__list__unpublish"
-             v-if="articleDetail?.is_show"
-             @click="onUnpublish()">取消发布</a>
+          <a class="mid__list__publish" v-if="!articleDetail?.is_show" @click="onPublish()">发布</a>
+          <a class="mid__list__unpublish" v-if="articleDetail?.is_show" @click="onUnpublish()">取消发布</a>
         </template>
       </mavon-editor>
     </div>
   </div>
   <!-- mdoal -->
-  <a-modal :destroyOnClose="true"
-           :visible="showModal"
-           :footer="null"
-           :title="modalTitle"
-           @cancel="onCancel()">
-    <category-create v-if="modalType === ModalType.categoryCreate"
-                     :categoryList="categoryList"
-                     @success="onCategorySuccess()"></category-create>
-    <category-update v-if="modalType === ModalType.categoryUpdate"
-                     :categoryId="selectCategoryId"
-                     @success="onCategorySuccess()"></category-update>
-    <article-update v-if="modalType === ModalType.articleUpdate"
-                    :articleId="selectArticleId"
-                    @success="onArticleSuccess()"></article-update>
+  <a-modal
+    :destroyOnClose="true"
+    :visible="showModal"
+    :footer="null"
+    :title="modalTitle"
+    @cancel="onCancel()"
+  >
+    <category-create
+      v-if="modalType === ModalType.categoryCreate"
+      :categoryList="categoryList"
+      @success="onCategorySuccess()"
+    ></category-create>
+    <category-update
+      v-if="modalType === ModalType.categoryUpdate"
+      :categoryId="selectCategoryId"
+      @success="onCategorySuccess()"
+    ></category-update>
+    <article-update
+      v-if="modalType === ModalType.articleUpdate"
+      :articleId="selectArticleId"
+      @success="onArticleSuccess()"
+    ></article-update>
   </a-modal>
 </template>
 <script lang="ts">
@@ -280,7 +279,7 @@ export default defineComponent({
           selectArticleId.value!,
           body
         );
-        success && message.success("发布成功");
+        success && message.success("保存成功");
         loading.value = false;
       } catch (error: any) {
         message.error(error.message);
@@ -366,11 +365,12 @@ export default defineComponent({
       try {
         loading.value = true;
         const { success } = await ArticleService.publish(
-          selectArticleId.value!
+          selectArticleId.value
         );
         if (success) {
           message.success("发布成功");
           articleDetail.value!.is_show = true;
+          articleList.value.find(item => item._id === selectArticleId.value)!.is_show = true;
         }
         loading.value = false;
       } catch (error: any) {
@@ -392,6 +392,7 @@ export default defineComponent({
         if (success) {
           message.success("取消发布成功");
           articleDetail.value!.is_show = false;
+          articleList.value.find(item => item._id === selectArticleId.value)!.is_show = false;
         }
         loading.value = false;
       } catch (error: any) {
@@ -429,11 +430,13 @@ export default defineComponent({
       onUnpublish,
     };
   },
+  data() {
+    return
+  }
 });
 </script>
 <style lang="less" scoped>
 @import "~ant-design-vue/lib/style/themes/default.less";
-
 .container {
   background: #fff;
   height: 100%;

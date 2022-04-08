@@ -10,6 +10,7 @@ const article = require("./routes/article");
 const photography = require("./routes/photography");
 const file = require("./routes/file");
 const photo = require("./routes/photo");
+const UserModel = require("./model/userModel");
 
 const cors = require("cors");
 const { needVerify, verifyToken } = require("./tools/token");
@@ -38,10 +39,14 @@ app.use(bodyParser.json());
 app.use(async (req, res, next) => {
   if (needVerify(req.url, req.method)) {
     const result = await verifyToken(req.headers.token);
-    if (result._id) {
+    if (
+      result._id &&
+      (await UserModel.findById(result._id)).type === "manager"
+    ) {
       next();
     } else {
       res.status(401).json({
+        success: false,
         message: "token失效，请重新登录",
       });
     }

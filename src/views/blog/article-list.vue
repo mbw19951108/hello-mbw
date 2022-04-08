@@ -1,12 +1,10 @@
 <template>
-  <a-list class="list"
-          item-layout="vertical"
-          :data-source="articleList">
+  <a-list class="list" item-layout="vertical" :data-source="articleList">
     <template #renderItem="{ item }">
       <a-list-item>
         <a-list-item-meta>
           <template #title>
-            <a @click="onSelectArticle(item._id, item.title)">{{ item.title }}</a>
+            <a @click="onSelectArticle(item._id)">{{ item.title }}</a>
           </template>
         </a-list-item-meta>
         <template #actions>
@@ -23,11 +21,13 @@
     </template>
     <template #loadMore>
       <div class="list__more">
-        <span class="list__more__text">每页{{meta.pageSize}}条，共{{meta.total}}条</span>
-        <a-pagination v-model:current="meta.pageNo"
-                      :total="meta.total"
-                      show-less-items
-                      @change="onPageChange($event)" />
+        <span class="list__more__text">每页{{ meta.pageSize }}条，共{{ meta.total }}条</span>
+        <a-pagination
+          v-model:current="meta.pageNo"
+          :total="meta.total"
+          show-less-items
+          @change="onPageChange($event)"
+        />
       </div>
     </template>
   </a-list>
@@ -37,7 +37,7 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 import { message, List, Pagination } from "ant-design-vue";
 import { EyeOutlined, CalendarOutlined } from "@ant-design/icons-vue";
 import { ArticleService } from "@/api";
-import { ArticleModel } from "@/api/models";
+import { ArticleModel, MetaModel } from "@/api/models";
 import moment from "moment";
 import { useRoute, useRouter } from "vue-router";
 
@@ -58,7 +58,7 @@ export default defineComponent({
     // 文章列表
     const articleList = ref<ArticleModel[]>([]);
     // 分页数据
-    const meta = ref({});
+    const meta = ref<MetaModel>({});
     watch(
       () => route.path,
       () => searchArticles()

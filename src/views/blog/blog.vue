@@ -1,24 +1,25 @@
 <template>
   <div class="container">
     <a-layout class="container__layout">
-      <a-layout-sider width="280"
-                      class="container__layout__sider">
-        <a-menu class="container__layout__sider__menu"
-                mode="inline"
-                :selectedKeys="[selectCategoryId]">
-          <a-menu-item :key="'all'"
-                       @click="onSelectAll()">
+      <a-layout-sider width="280" class="container__layout__sider">
+        <a-menu
+          class="container__layout__sider__menu"
+          mode="inline"
+          :selectedKeys="[selectCategoryId]"
+        >
+          <a-menu-item :key="'all'" @click="onSelectAll()">
             <span>全部文章</span>
           </a-menu-item>
-          <a-sub-menu :key="category._id"
-                      v-for="category in categoryList">
+          <a-sub-menu :key="category._id" v-for="category in categoryList">
             <template #title>
-              <span>{{category.title}}</span>
+              <span>{{ category.title }}</span>
             </template>
-            <a-menu-item :key="child._id"
-                         v-for="child in category.children"
-                         @click="onSelectCategory(child._id)">
-              <span>{{child.title}}</span>
+            <a-menu-item
+              :key="child._id"
+              v-for="child in category.children"
+              @click="onSelectCategory(child._id)"
+            >
+              <span>{{ child.title }}</span>
             </a-menu-item>
           </a-sub-menu>
         </a-menu>

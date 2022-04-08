@@ -3,6 +3,7 @@ export interface CategoryModel {
   title: string;
   parent_id: string;
   sort: number;
+  children?: CategoryModel[];
 }
 
 export interface CategoryCreateBody {

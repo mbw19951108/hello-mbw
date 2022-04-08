@@ -1,8 +1,6 @@
 <template>
-  <div id="gridContainer"
-       ref="gridContainer"></div>
+  <div id="gridContainer" ref="gridContainer"></div>
 </template>
-
 <script lang="ts">
 import { onMounted, ref } from "vue";
 import * as echarts from "echarts";

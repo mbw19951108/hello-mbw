@@ -1,33 +1,23 @@
 <template>
   <a-form layout="vertical">
-    <a-form-item v-bind="validateInfos.parent"
-                 label="父级分类">
-      <a-select v-model:value="modelRef.parent"
-                allow-clear>
-        <a-select-option v-for="item in categoryList"
-                         :key="item._id">
-          {{ item.title }}
-        </a-select-option>
+    <a-form-item v-bind="validateInfos.parent" label="父级分类">
+      <a-select v-model:value="modelRef.parent" allow-clear>
+        <a-select-option v-for="item in categoryList" :key="item._id">{{ item.title }}</a-select-option>
       </a-select>
     </a-form-item>
-    <a-form-item v-bind="validateInfos.title"
-                 label="分类名称">
+    <a-form-item v-bind="validateInfos.title" label="分类名称">
       <a-input v-model:value="modelRef.title"></a-input>
     </a-form-item>
-    <a-button :loading="loading"
-              type="primary"
-              @click="onSubmit">
-      提交
-    </a-button>
+    <a-button :loading="loading" type="primary" @click="onSubmit">提交</a-button>
   </a-form>
 </template>
 <script lang="ts">
 import { Form, Input, message, Select } from "ant-design-vue";
-import { reactive, ref, PropType, watchEffect, SetupContext } from "vue";
+import { defineComponent, reactive, ref, PropType, watchEffect, SetupContext } from "vue";
 import { useForm } from "ant-design-vue/lib/form";
 import { CategoryCreateBody, CategoryModel } from "@/api/models";
 import { CategoryService } from "@/api";
-export default {
+export default defineComponent({
   name: "CategoryCreate",
   components: {
     [Form.name]: Form,
@@ -90,6 +80,7 @@ export default {
           emit("success");
         }
       } catch (error: any) {
+        console.log(error);
         loading.value = false;
         message.error(error.message);
       }
@@ -101,5 +92,5 @@ export default {
       onSubmit,
     };
   },
-};
+});
 </script>

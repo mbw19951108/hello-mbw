@@ -102,7 +102,7 @@ router
       data: result,
     });
   })
-  .patch(async (req, res) => {
+  .put(async (req, res) => {
     const _id = mongoose.Types.ObjectId(req.params.articleId);
     const { title, keywords, content, mdcontent, is_show } = {
       ...req.body,
@@ -134,7 +134,7 @@ router
       });
   });
 
-router.route("/article/:articleId/publish").patch(async (req, res) => {
+router.route("/article/:articleId/publish").put(async (req, res) => {
   const _id = mongoose.Types.ObjectId(req.params.articleId);
   const result = await ArticleModel.findOneAndUpdate(
     { _id },
@@ -149,7 +149,7 @@ router.route("/article/:articleId/publish").patch(async (req, res) => {
     });
 });
 
-router.route("/article/:articleId/unpublish").patch(async (req, res) => {
+router.route("/article/:articleId/unpublish").put(async (req, res) => {
   const _id = mongoose.Types.ObjectId(req.params.articleId);
   const result = await ArticleModel.findOneAndUpdate(
     { _id },

@@ -25,6 +25,7 @@ import { defineComponent, onMounted, reactive, ref } from "vue";
 import { useForm } from "ant-design-vue/lib/form";
 import { AuthService, LoginBody } from "@/api";
 import { useRouter } from "vue-router";
+import md5 from "md5";
 export default defineComponent({
   components: {
     [Form.name]: Form,
@@ -90,7 +91,7 @@ export default defineComponent({
       validate().then((res) => {
         const body: LoginBody = {
           username: res.username,
-          password: res.password,
+          password: md5(res.password),
           verify: res.verify,
         };
         login(body);

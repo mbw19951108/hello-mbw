@@ -23,8 +23,8 @@ export default {
   post<T>(url: string, data: any, config?: AxiosRequestConfig) {
     return http.post<T>(url, data, config) as Promise<DataServiceResult<T>>;
   },
-  patch<T>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return http.patch<T>(url, data, config) as Promise<DataServiceResult<T>>;
+  put<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return http.put<T>(url, data, config) as Promise<DataServiceResult<T>>;
   },
   delete<T>(url: string, config?: AxiosRequestConfig) {
     return http.delete<T>(url, config) as Promise<DataServiceResult<T>>;

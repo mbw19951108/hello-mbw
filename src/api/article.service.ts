@@ -13,11 +13,11 @@ export const ArticleService = {
   create: (body: ArticleCreateBody) => http.post(`/article`, body),
   detail: (articleId: string) => http.get(`/article/${articleId}`),
   update: (articleId: string, body: ArticleUpdateBody) =>
-    http.patch(`/article/${articleId}`, body),
+    http.put(`/article/${articleId}`, body),
   delete: (articleId: string) => http.delete(`/article/${articleId}`),
-  publish: (articleId: string) => http.patch(`/article/${articleId}/publish`),
+  publish: (articleId: string) => http.put(`/article/${articleId}/publish`),
   unpublish: (articleId: string) =>
-    http.patch(`/article/${articleId}/unpublish`),
+    http.put(`/article/${articleId}/unpublish`),
   searchByCategoryId: (categoryId: string, query?: articlePageQueryModel) =>
     http.get(`/category/${categoryId}/article?${qs.stringify(query)}`),
 };

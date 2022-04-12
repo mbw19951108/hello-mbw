@@ -80,7 +80,7 @@ router
         data: result,
       });
   })
-  .patch(async (req, res) => {
+  .put(async (req, res) => {
     const _id = mongoose.Types.ObjectId(req.params.userId);
     const { name, email, mobile } = {
       ...req.body,

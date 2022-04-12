@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const UserModel = require("../model/userModel");
 const CaptchaModel = require("../model/captchaModel");
-const md5 = require("md5");
 const { generateToken } = require("../tools/token");
 
 router.post("/login", async (req, res) => {
@@ -28,8 +27,8 @@ router.post("/login", async (req, res) => {
   }
   let result = await UserModel.findOneAndUpdate(
     {
-      username: username,
-      password: md5(password),
+      username,
+      password,
     },
     {
       login_time: new Date(),

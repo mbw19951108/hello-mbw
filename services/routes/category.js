@@ -72,7 +72,7 @@ router
         data: result,
       });
   })
-  .patch(async (req, res) => {
+  .put(async (req, res) => {
     const id = mongoose.Types.ObjectId(req.params.categoryId);
     const { title, parent_id, description, sort } = {
       ...req.body,
@@ -112,7 +112,7 @@ router
           message: "请先删除该分类下的文章",
         });
       } else {
-        const result = await CategoryModel.findByIdAndDelete(id);
+        const result = await CategoryModel.findByIdAndDelete(category_id);
         if (result) {
           res.json({
             success: true,

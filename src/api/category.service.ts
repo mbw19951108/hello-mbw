@@ -5,6 +5,6 @@ export const CategoryService = {
   search: () => http.get(`/category`),
   create: (body: CategoryCreateBody) => http.post(`/category`, body),
   update: (categoryId: string, body: CategoryUpdateBody) =>
-    http.patch(`/category/${categoryId}`, body),
+    http.put(`/category/${categoryId}`, body),
   delete: (categoryId: string) => http.delete(`/category/${categoryId}`),
 };

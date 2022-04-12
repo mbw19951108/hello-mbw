@@ -149,8 +149,8 @@ export default defineComponent({
     const loading = ref(false);
     const md = ref(null);
     const showModal = ref(false);
-    const modalTitle = ref();
-    const modalType = ref();
+    const modalTitle = ref<string>();
+    const modalType = ref<string>();
     const selectCategoryId = ref<string>();
     const selectArticleId = ref<string>();
 
@@ -430,9 +430,6 @@ export default defineComponent({
       onUnpublish,
     };
   },
-  data() {
-    return
-  }
 });
 </script>
 <style lang="less" scoped>

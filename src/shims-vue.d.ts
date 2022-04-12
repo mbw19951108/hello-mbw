@@ -4,5 +4,3 @@ declare module "*.vue" {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
-
-declare module "@/assets/live2dw/lib/L2Dwidget.min"

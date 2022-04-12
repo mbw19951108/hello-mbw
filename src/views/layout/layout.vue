@@ -84,6 +84,9 @@ export default defineComponent({
       opacity: 0.65;
       font-size: 16px;
       font-style: italic;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 }

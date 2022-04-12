@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@types/echarts": "^4.9.13",
+    "@types/md5": "^2.3.2",
     "@types/three": "^0.137.0",
     "ant-design-vue": "^2.2.8",
     "axios": "^0.26.1",
@@ -21,6 +22,9 @@
     "echarts-gl": "^2.0.8",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
+    "imagemin": "^7.0.1",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-pngquant": "^9.0.2",
     "jsonwebtoken": "^8.5.1",
     "less": "^4.1.2",
     "less-loader": "6.0.0",
@@ -39,7 +43,6 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@types/md5": "^2.3.2",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.15",

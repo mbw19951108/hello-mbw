@@ -4,8 +4,8 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * @param maxSize 大小
- * @param maxCount 数量
+ * @param maxSize 文件大小
+ * @param maxCount 文件数量
  * @param dirPath 存放路径
  * @returns
  */

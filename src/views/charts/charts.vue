@@ -56,7 +56,6 @@ export default {
       };
       gridChart.setOption(option);
     });
-
     return {
       gridContainer,
     };
@@ -64,9 +63,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.ant-layout-content {
-  background-color: #001529;
-}
 #gridContainer {
   height: 100%;
 }

@@ -76,7 +76,6 @@ export default defineComponent({
         ],
       })
     );
-
     onMounted(() => getCaptcha());
     // 获取图形验证码
     const getCaptcha = async () => {
@@ -87,6 +86,7 @@ export default defineComponent({
         message.error(error.message);
       }
     };
+    // 表单验证
     const onSubmit = async () => {
       validate().then((res) => {
         const body: LoginBody = {
@@ -97,20 +97,20 @@ export default defineComponent({
         login(body);
       });
     };
-
+    // 登录
     const login = async (body: LoginBody) => {
       try {
         loading.value = true;
         const { success } = await AuthService.login(body);
         if (success) {
-          loading.value = false;
           message.success("登录成功");
           router.push("/admin");
         }
-      } catch (error: any) {
         loading.value = false;
+      } catch (error: any) {
         message.error(error.message);
         getCaptcha();
+        loading.value = false;
       }
     };
     return {

@@ -52,6 +52,7 @@ export const menuRoutes: Array<RouteRecordRaw> = [
   },
 ];
 
+// 后台管理页面路由
 export const adminRoutes: Array<RouteRecordRaw> = [
   {
     path: "",

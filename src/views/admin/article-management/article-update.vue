@@ -27,8 +27,8 @@ export default defineComponent({
   },
   emits: ["success"],
   setup(props: any, { emit }: SetupContext) {
-    const loading = ref(false);
-    const modelRef = reactive({
+    let loading = ref(false);
+    let modelRef = reactive({
       title: null,
     });
     const { validate, validateInfos } = useForm(
@@ -41,8 +41,8 @@ export default defineComponent({
             message: "请填写标题名称",
           },
           {
-            max: 20,
-            message: "最多不超过20位",
+            max: 30,
+            message: "最多不超过30位",
           },
         ],
       })
@@ -62,13 +62,13 @@ export default defineComponent({
         loading.value = true;
         const { success } = await ArticleService.update(props.articleId, body);
         if (success) {
-          loading.value = false;
           message.success("编辑成功");
           emit("success");
         }
-      } catch (error: any) {
         loading.value = false;
+      } catch (error: any) {
         message.error(error.message);
+        loading.value = false;
       }
     };
     return {

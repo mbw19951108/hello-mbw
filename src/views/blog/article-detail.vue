@@ -5,9 +5,9 @@
         <template #subTitle>
           <div class="detail__header__subTitle">
             <calendar-outlined />
-            <span
-              class="detail__header__subTitle__text"
-            >{{ moment(articleDetail?.created_time).format("YYYY-MM-DD") }}</span>
+            <span class="detail__header__subTitle__text">{{
+              moment(articleDetail?.created_time).format("YYYY-MM-DD")
+            }}</span>
           </div>
           <div class="detail__header__subTitle">
             <eye-outlined />
@@ -25,12 +25,10 @@ import { message, PageHeader, Spin } from "ant-design-vue";
 import { EyeOutlined, CalendarOutlined } from "@ant-design/icons-vue";
 import { ArticleService } from "@/api";
 import { ArticleModel } from "@/api/models";
-import moment from "moment";
 import { useRoute } from "vue-router";
 import mavonEditor from "mavon-editor";
-
+import moment from "moment";
 export default defineComponent({
-  name: "ArticleDetail",
   components: {
     [PageHeader.name]: PageHeader,
     [Spin.name]: Spin,
@@ -40,8 +38,8 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const loading = ref<boolean>(false);
-    const articleDetail = ref<ArticleModel>();
+    let loading = ref<boolean>(false);
+    let articleDetail = ref<ArticleModel>();
     onMounted(() => getArticle());
     // 获取文章详情
     const getArticle = async () => {
@@ -69,16 +67,20 @@ export default defineComponent({
 <style lang="less" scoped>
 .detail {
   height: 100%;
+
   &__header {
     border-bottom: 1px solid rgb(235, 237, 240);
+
     &__subTitle {
       display: inline-block;
       margin-left: 15px;
+
       &__text {
         margin-left: 8px;
       }
     }
   }
+
   &__content {
     height: calc(100% - 73px);
     overflow: auto;

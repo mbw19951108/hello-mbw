@@ -18,7 +18,6 @@ import { useForm } from "ant-design-vue/lib/form";
 import { CategoryCreateBody, CategoryModel } from "@/api/models";
 import { CategoryService } from "@/api";
 export default defineComponent({
-  name: "CategoryCreate",
   components: {
     [Form.name]: Form,
     [Form.Item.name]: Form.Item,
@@ -33,13 +32,9 @@ export default defineComponent({
     },
   },
   emits: ["success"],
-  setup(props: { categoryList?: CategoryModel[] }, { emit }: SetupContext) {
-    const categoryList = ref<CategoryModel[]>([]);
-    watchEffect(
-      () => props.categoryList && (categoryList.value = props.categoryList)
-    );
-    const loading = ref(false);
-    const modelRef = reactive({
+  setup(props, { emit }: SetupContext) {
+    let loading = ref(false);
+    let modelRef = reactive({
       parent: null,
       title: null,
     });
@@ -69,16 +64,15 @@ export default defineComponent({
         createCategory(body);
       });
     };
-
     const createCategory = async (body: CategoryCreateBody) => {
       try {
         loading.value = true;
         const { success } = await CategoryService.create(body);
         if (success) {
-          loading.value = false;
           message.success("新建成功");
           emit("success");
         }
+        loading.value = false;
       } catch (error: any) {
         console.log(error);
         loading.value = false;

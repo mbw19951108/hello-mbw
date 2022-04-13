@@ -40,11 +40,10 @@ import { defineComponent, onMounted, ref } from "vue";
 import { Image, message, Timeline } from "ant-design-vue";
 import { CalendarOutlined, EnvironmentOutlined } from "@ant-design/icons-vue";
 import { PhotographyService } from "@/api";
-import { PageQueryModel, PhotographyModel } from "@/api/models";
+import { MetaModel, PageQueryModel, PhotographyModel } from "@/api/models";
 import moment from "moment";
-import lodash from "lodash";
+import _ from "lodash";
 export default defineComponent({
-  name: "Photography",
   components: {
     [Image.name]: Image,
     [Image.PreviewGroup.name]: Image.PreviewGroup,
@@ -54,12 +53,17 @@ export default defineComponent({
     EnvironmentOutlined,
   },
   setup() {
-    const photographyList = ref<PhotographyModel[]>([]);
+    let loading = ref(false);
+    // 列表数据
+    let photographyList = ref<PhotographyModel[]>([]);
     // 分页数据
-    const meta = ref();
-    const loading = ref(false);
+    let meta = ref<MetaModel>({
+      pageNo: 1,
+      pageSize: 5,
+      total: 0
+    });
     // 是否已全部加载
-    const end = ref(false);
+    let end = ref(false);
     onMounted(() => getPhotography());
     const getPhotography = async (query?: PageQueryModel) => {
       try {
@@ -78,7 +82,7 @@ export default defineComponent({
       }
     };
     // 滚动条滚动底部加载更多
-    const onScroll = lodash.throttle(async (event: any) => {
+    const onScroll = _.throttle(async (event: any) => {
       if (loading.value || end.value) return;
       if (meta.value.pageNo >= meta.value.total / meta.value.pageSize) {
         end.value = true;
@@ -115,22 +119,27 @@ export default defineComponent({
   padding: 30px 50px;
   height: 100%;
   background: #fff;
+
   &__timeline {
     &::-webkit-scrollbar {
       display: none;
     }
+
     height: 100%;
     overflow: auto;
     padding: 5px;
     margin: auto;
+
     &__icon {
       margin-right: 5px;
     }
+
     &__desc {
       opacity: 0.3;
       font-style: italic;
     }
   }
+
   ::v-deep .ant-image-img {
     width: auto;
     height: 150px;

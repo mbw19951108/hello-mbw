@@ -15,13 +15,8 @@
           <a-date-picker v-model:value="modelRef.date" />
         </a-form-item>
         <a-form-item v-bind="validateInfos.photos" label="照片">
-          <a-upload
-            v-model:file-list="modelRef.photos"
-            multiple
-            :action="uploadOptions.url"
-            :headers="uploadOptions.headers"
-            list-type="picture"
-          >
+          <a-upload v-model:file-list="modelRef.photos" multiple :action="uploadOptions.url"
+            :headers="uploadOptions.headers" list-type="picture">
             <a-button>
               <upload-outlined></upload-outlined>上传图片
             </a-button>
@@ -31,11 +26,7 @@
       </a-form>
     </div>
     <div class="container__photography">
-      <a-timeline
-        class="container__photography__timeline"
-        mode="alternate"
-        @scroll="onScroll($event)"
-      >
+      <a-timeline class="container__photography__timeline" mode="alternate" @scroll="onScroll($event)">
         <a-timeline-item>
           <div>
             I used to think I couldn't lose anyone if I photographed them enough.
@@ -66,11 +57,7 @@
           <div class="container__photography__timeline__desc" v-if="photography.desc">
             <span>{{ photography.desc }}</span>
           </div>
-          <a-popconfirm
-            v-if="photography._id"
-            title="确定删除么？"
-            @confirm="onDelPhotography(photography._id)"
-          >
+          <a-popconfirm v-if="photography._id" title="确定删除么？" @confirm="onDelPhotography(photography._id)">
             <delete-outlined class="mid__list__icon-delete" />
           </a-popconfirm>
         </a-timeline-item>
@@ -105,7 +92,7 @@ import {
 } from "@/api/models";
 import { PhotographyService } from "@/api";
 import moment from "moment";
-import lodash from "lodash";
+import _ from "lodash";
 export default defineComponent({
   components: {
     [Form.name]: Form,
@@ -125,18 +112,13 @@ export default defineComponent({
     DeleteOutlined,
   },
   setup() {
-    const photographyList = ref<PhotographyModel[]>([]);
+    let loading = ref(false);
+    let photographyList = ref<PhotographyModel[]>([]);
     // 分页数据
-    const meta = ref();
+    let meta = ref();
     // 是否已全部加载
-    const end = ref<boolean>(false);
-    // 图片上传配置
-    const uploadOptions = {
-      url: `${process.env.VUE_APP_API_URL}/photo`,
-      headers: { token: localStorage.getItem("token") },
-    };
-    const loading = ref(false);
-    const modelRef = reactive({
+    let end = ref<boolean>(false);
+    let modelRef = reactive({
       title: null,
       location: null,
       desc: null,
@@ -179,9 +161,7 @@ export default defineComponent({
     );
     onMounted(() => getPhotography());
     // 校验并处理表单数据
-    const onSubmit = async () => {
-      validate().then((res) => createPhotography(res));
-    };
+    const onSubmit = async () => validate().then((res) => createPhotography(res));
     // 创建摄影条目
     const createPhotography = async (data: any) => {
       let body: PhotographyCreateBody = {
@@ -198,7 +178,6 @@ export default defineComponent({
         loading.value = true;
         const { success } = await PhotographyService.create(body);
         if (success) {
-          loading.value = false;
           message.success("新建成功");
           end.value = false;
           // 重置表单
@@ -206,9 +185,10 @@ export default defineComponent({
           // 获取最新摄影条目
           getPhotography();
         }
-      } catch (error: any) {
         loading.value = false;
+      } catch (error: any) {
         message.error(error.message);
+        loading.value = false;
       }
     };
 
@@ -230,7 +210,7 @@ export default defineComponent({
       }
     };
     // 滚动条滚动底部加载更多
-    const onScroll = lodash.throttle(async (event: any) => {
+    const onScroll = _.throttle(async (event: any) => {
       if (loading.value || end.value) return;
       if (meta.value.pageNo >= meta.value.total / meta.value.pageSize) {
         end.value = true;
@@ -247,35 +227,36 @@ export default defineComponent({
         event.target.scrollTop -
         event.target.clientHeight;
       // scrollBottom：滚动到底部的距离
-      if (scrollBottom < 300) {
-        getPhotography({
-          pageNo: meta.value.pageNo + 1,
-        });
-      }
+      if (scrollBottom < 300) getPhotography({
+        pageNo: meta.value.pageNo + 1,
+      })
     }, 500);
     // 删除分类
     const onDelPhotography = async (photographyId: string) => {
       try {
         loading.value = true;
         const { success } = await PhotographyService.delete(photographyId);
-        loading.value = false;
         if (success) {
           message.success("删除成功");
           end.value = false;
           // 获取最新摄影条目
           getPhotography();
         }
+        loading.value = false;
       } catch (error: any) {
         message.error(error.message);
         loading.value = false;
       }
     };
     return {
+      apiUrl: process.env.VUE_APP_API_URL,
+      uploadOptions: {
+        url: `${process.env.VUE_APP_API_URL}/photo`,
+        headers: { token: localStorage.getItem("token") },
+      },
       loading,
       modelRef,
       validateInfos,
-      uploadOptions,
-      apiUrl: process.env.VUE_APP_API_URL,
       moment,
       photographyList,
       onScroll,
@@ -291,6 +272,7 @@ export default defineComponent({
   height: 100%;
   background: #fff;
   display: flex;
+
   &__form {
     width: 400px;
     padding: 40px;
@@ -304,22 +286,27 @@ export default defineComponent({
     padding: 30px 50px;
     height: 100%;
     background: #fff;
+
     &__timeline {
       &::-webkit-scrollbar {
         display: none;
       }
+
       height: 100%;
       overflow: auto;
       padding: 5px;
       margin: auto;
+
       &__icon {
         margin-right: 5px;
       }
+
       &__desc {
         opacity: 0.3;
         font-style: italic;
       }
     }
+
     ::v-deep .ant-image-img {
       width: auto;
       height: 150px;

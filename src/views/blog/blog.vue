@@ -2,11 +2,7 @@
   <div class="container">
     <a-layout class="container__layout">
       <a-layout-sider width="280" class="container__layout__sider">
-        <a-menu
-          class="container__layout__sider__menu"
-          mode="inline"
-          :selectedKeys="[selectCategoryId]"
-        >
+        <a-menu class="container__layout__sider__menu" mode="inline" :selectedKeys="[selectCategoryId]">
           <a-menu-item :key="'all'" @click="onSelectAll()">
             <span>全部文章</span>
           </a-menu-item>
@@ -14,11 +10,7 @@
             <template #title>
               <span>{{ category.title }}</span>
             </template>
-            <a-menu-item
-              :key="child._id"
-              v-for="child in category.children"
-              @click="onSelectCategory(child._id)"
-            >
+            <a-menu-item :key="child._id" v-for="child in category.children" @click="onSelectCategory(child._id)">
               <span>{{ child.title }}</span>
             </a-menu-item>
           </a-sub-menu>
@@ -38,7 +30,6 @@ import { CategoryModel } from "@/api/models";
 import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "Blog",
   components: {
     [Layout.name]: Layout,
     [Layout.Header.name]: Layout.Header,
@@ -51,13 +42,13 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const selectCategoryId = ref(route.params.categoryId || "all");
+    let selectCategoryId = ref<string>("all");
     // 分类列表
-    const categoryList = ref<CategoryModel[]>([]);
+    let categoryList = ref<CategoryModel[]>([]);
     watch(
       () => route.path,
       () => {
-        selectCategoryId.value = route.params.categoryId || "all";
+        selectCategoryId.value = route.params.categoryId as string || "all";
       }
     );
     onMounted(() => searchCategories());
@@ -96,16 +87,20 @@ export default defineComponent({
 .container {
   padding: 35px 160px;
   height: 100%;
+
   &__layout {
     height: 100%;
     padding: 24px 0;
     background: #fff;
+
     &__sider {
       background: #fff;
+
       &__menu {
         height: 100%;
       }
     }
+
     &__content {
       padding: 0 24px;
     }

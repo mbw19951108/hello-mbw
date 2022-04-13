@@ -1,16 +1,11 @@
 <template>
   <a-layout class="layout">
     <a-layout-header class="layout__header">
-      <img class="layout__header__logo" src="../../assets/logo.jpg" alt="logo" />
-      <a-menu
-        class="layout__header__menu"
-        :selectedKeys="selectedKeys"
-        theme="dark"
-        mode="horizontal"
-      >
+      <img class="layout__header__logo" src="@/assets/logo.jpg" alt="logo" />
+      <a-menu class="layout__header__menu" :selectedKeys="selectedKeys" theme="dark" mode="horizontal">
         <a-menu-item v-for="route in filterRoutes()" :key="route.name">
           <router-link :to="{ path: route.path }">
-            <component :is="route.meta.icon" />
+            <component :is="route.meta!.icon" />
             <span>{{ route.meta?.title }}</span>
           </router-link>
         </a-menu-item>
@@ -32,7 +27,6 @@ import {
 } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
 import { menuRoutes } from "@/router/routes";
-
 export default defineComponent({
   components: {
     [Layout.name]: Layout,
@@ -50,7 +44,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     // 顶部导航选中状态
-    const selectedKeys = ref<string[]>([]);
+    let selectedKeys = ref<string[]>([]);
     watchEffect(
       () => (selectedKeys.value = [route.matched[1]?.name as string])
     );
@@ -68,17 +62,21 @@ export default defineComponent({
 <style lang="less" scoped>
 .layout {
   height: 100%;
+
   &__header {
     display: flex;
     align-items: center;
+
     &__logo {
       width: 150px;
       height: 25px;
       margin-right: 30px;
     }
+
     &__menu {
       flex-grow: 1;
     }
+
     &__text {
       color: #fff;
       opacity: 0.65;

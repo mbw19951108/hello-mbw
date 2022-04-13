@@ -22,12 +22,8 @@
     <template #loadMore>
       <div class="list__more">
         <span class="list__more__text">每页{{ meta.pageSize }}条，共{{ meta.total }}条</span>
-        <a-pagination
-          v-model:current="meta.pageNo"
-          :total="meta.total"
-          show-less-items
-          @change="onPageChange($event)"
-        />
+        <a-pagination v-model:current="meta.pageNo" :total="meta.total" show-less-items
+          @change="onPageChange($event)" />
       </div>
     </template>
   </a-list>
@@ -38,11 +34,9 @@ import { message, List, Pagination } from "ant-design-vue";
 import { EyeOutlined, CalendarOutlined } from "@ant-design/icons-vue";
 import { ArticleService } from "@/api";
 import { ArticleModel, MetaModel } from "@/api/models";
-import moment from "moment";
 import { useRoute, useRouter } from "vue-router";
-
+import moment from "moment";
 export default defineComponent({
-  name: "ArticleList",
   components: {
     [List.name]: List,
     [List.Item.name]: List.Item,
@@ -54,17 +48,13 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const loading = ref<boolean>(false);
+    let loading = ref(false);
     // 文章列表
-    const articleList = ref<ArticleModel[]>([]);
+    let articleList = ref<ArticleModel[]>([]);
     // 分页数据
-    const meta = ref<MetaModel>({});
+    let meta = ref({});
     watch(
-      () => route.path,
-      () => searchArticles()
-    );
-    watch(
-      () => route.query,
+      () => route,
       () => searchArticles()
     );
     onMounted(() => searchArticles());
@@ -84,16 +74,17 @@ export default defineComponent({
         meta.value = result.meta!;
         loading.value = false;
       } catch (error: any) {
-        loading.value = false;
         message.error(error.message);
+        loading.value = false;
       }
     };
     // 选择文章
     const onSelectArticle = (articleId: string) => {
-      if (route.params.categoryId) {
+      const categoryId = route.params.categoryId as string;
+      if (categoryId) {
         router.push({
           name: "CategoryArticleDetail",
-          params: { articleId, categoryId: route.params.categoryId as string },
+          params: { articleId, categoryId },
         });
       } else {
         router.push({
@@ -108,9 +99,7 @@ export default defineComponent({
         ...route.query,
         pageNo,
       };
-      if (pageNo === 1) {
-        delete Object.assign(query).pageNo;
-      }
+      if (pageNo === 1) delete Object.assign(query).pageNo;
       router.push({ query });
     };
     return {
@@ -130,16 +119,19 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   &__more {
     display: flex;
     align-items: center;
     justify-content: center;
     padding-top: 24px;
     flex-shrink: 0;
+
     &__text {
       margin-right: 10px;
     }
   }
+
   &__extra {
     margin-left: 8px;
   }

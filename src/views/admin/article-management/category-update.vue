@@ -8,7 +8,7 @@
 </template>
 <script lang="ts">
 import { Form, Input, message } from "ant-design-vue";
-import { reactive, ref, defineComponent, watchEffect, SetupContext } from "vue";
+import { reactive, ref, defineComponent, SetupContext } from "vue";
 import { useForm } from "ant-design-vue/lib/form";
 import { CategoryUpdateBody, CategoryModel } from "@/api/models";
 import { CategoryService } from "@/api";

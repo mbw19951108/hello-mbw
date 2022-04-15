@@ -1,43 +1,47 @@
 <template>
-  <a-list class="list" item-layout="vertical" :data-source="articleList">
-    <template #renderItem="{ item }">
-      <a-list-item>
-        <a-list-item-meta>
-          <template #title>
-            <a @click="onSelectArticle(item._id)">{{ item.title }}</a>
+  <a-spin wrapperClassName="spin" :spinning="loading">
+    <a-list class="list" item-layout="vertical" :data-source="articleList">
+      <template #renderItem="{ item }">
+        <a-list-item>
+          <a-list-item-meta>
+            <template #title>
+              <a @click="onSelectArticle(item._id)">{{ item.title }}</a>
+            </template>
+          </a-list-item-meta>
+          <template #actions>
+            <div>
+              <calendar-outlined />
+              <span class="list__extra">{{ moment(item.created_time).format("YYYY-MM-DD") }}</span>
+            </div>
+            <div>
+              <eye-outlined />
+              <span class="list__extra">{{ item.click_count }}</span>
+            </div>
           </template>
-        </a-list-item-meta>
-        <template #actions>
-          <div>
-            <calendar-outlined />
-            <span class="list__extra">{{ moment(item.created_time).format("YYYY-MM-DD") }}</span>
-          </div>
-          <div>
-            <eye-outlined />
-            <span class="list__extra">{{ item.click_count }}</span>
-          </div>
-        </template>
-      </a-list-item>
-    </template>
-    <template #loadMore>
-      <div class="list__more">
-        <span class="list__more__text">每页{{ meta.pageSize }}条，共{{ meta.total }}条</span>
-        <a-pagination v-model:current="meta.pageNo" :total="meta.total" show-less-items
-          @change="onPageChange($event)" />
-      </div>
-    </template>
-  </a-list>
+        </a-list-item>
+      </template>
+      <template #loadMore>
+        <div class="list__more">
+          <span class="list__more__text">每页{{ meta.pageSize }}条，共{{ meta.total }}条</span>
+          <a-pagination v-model:current="meta.pageNo" :total="meta.total" show-less-items
+            @change="onPageChange($event)" />
+        </div>
+      </template>
+    </a-list>
+  </a-spin>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
-import { message, List, Pagination } from "ant-design-vue";
+import { message, List, Pagination, Spin } from "ant-design-vue";
 import { EyeOutlined, CalendarOutlined } from "@ant-design/icons-vue";
 import { ArticleService } from "@/api";
 import { ArticleModel, MetaModel } from "@/api/models";
 import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
+
 export default defineComponent({
   components: {
+    [Spin.name]: Spin,
     [List.name]: List,
     [List.Item.name]: List.Item,
     [List.Item.Meta.name]: List.Item.Meta,
@@ -52,9 +56,17 @@ export default defineComponent({
     // 文章列表
     let articleList = ref<ArticleModel[]>([]);
     // 分页数据
-    let meta = ref({});
+    let meta = ref<MetaModel>({
+      pageNo: 1,
+      pageSize: 10,
+      total: 0
+    });
     watch(
-      () => route,
+      () => route.path,
+      () => searchArticles()
+    );
+    watch(
+      () => route.query,
       () => searchArticles()
     );
     onMounted(() => searchArticles());
@@ -73,9 +85,11 @@ export default defineComponent({
         articleList.value = result.data;
         meta.value = result.meta!;
         loading.value = false;
+        console.log(loading.value);
       } catch (error: any) {
         message.error(error.message);
         loading.value = false;
+        console.log(loading.value);
       }
     };
     // 选择文章
@@ -120,6 +134,10 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
 
+  ::v-deep .ant-spin-nested-loading {
+    overflow: auto;
+  }
+
   &__more {
     display: flex;
     align-items: center;
@@ -136,10 +154,6 @@ export default defineComponent({
     margin-left: 8px;
   }
 
-  ::v-deep .ant-spin-nested-loading {
-    overflow: auto;
-  }
-
   ::v-deep .ant-list-item-meta-title,
   .ant-list-item-meta {
     margin-bottom: 0;
@@ -148,5 +162,14 @@ export default defineComponent({
   ::v-deep .ant-list-item-action {
     margin-top: 3px;
   }
+}
+
+.spin {
+  height: 100%;
+
+  ::v-deep .ant-spin-container {
+    height: 100%;
+  }
+
 }
 </style>

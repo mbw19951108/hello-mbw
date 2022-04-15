@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const imagemin = require('imagemin');
+const imageminMozjpeg  = require('imagemin-mozjpeg');
+const imageminPngquant = require('imagemin-pngquant');
 const { getMulter } = require("../tools/multer");
 
 // 最大5MB

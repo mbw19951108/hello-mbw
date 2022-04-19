@@ -44,12 +44,12 @@ export const menuRoutes: Array<RouteRecordRaw> = [
     component: () => import("@/views/photography/photography.vue"),
     meta: { title: "摄影", icon: "camera-outlined" },
   },
-  {
-    path: "/charts",
-    name: "Charts",
-    component: () => import("@/views/charts/charts.vue"),
-    meta: { title: "Charts", icon: "dashboard-outlined" },
-  },
+  // {
+  //   path: "/charts",
+  //   name: "Charts",
+  //   component: () => import("@/views/charts/charts.vue"),
+  //   meta: { title: "Charts", icon: "dashboard-outlined" },
+  // },
 ];
 
 // 后台管理页面路由

@@ -75,12 +75,7 @@ export default defineComponent({
       const query = { ...route.query };
       try {
         loading.value = true;
-        let result;
-        if (categoryId.value) {
-          result = await ArticleService.searchByCategoryId(categoryId.value, query);
-        } else {
-          result = await ArticleService.search(query);
-        }
+        const result = await ArticleService.search(query);
         articleList.value = result.data;
         meta.value = result.meta!;
         loading.value = false;

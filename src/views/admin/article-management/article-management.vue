@@ -150,9 +150,10 @@ export default defineComponent({
     const searchArticles = async (categoryId: string) => {
       try {
         loading.value = true;
-        const { data } = await ArticleService.searchByCategoryId(categoryId, {
+        const { data } = await ArticleService.search({
           pageable: 0,
           showAll: true,
+          categoryId
         });
         articleList.value = data;
         loading.value = false;

@@ -4,17 +4,30 @@ const ArticleModel = require("../model/articleModel");
 const mongoose = require("../model/core");
 
 router
-  .route("/article")
+  .route("/articles")
   .get(async (req, res) => {
     const pageNo = parseInt(req.query.pageNo) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
-    const params = {
-      is_show: true,
-    };
-    const result = await ArticleModel.find(params, { content: 0, mdcontent: 0 })
-      .skip((pageNo - 1) * pageSize)
-      .limit(pageSize)
-      .sort({ created_time: -1 });
+    const pageable = req.query.pageable;
+    const showAll = req.query.showAll;
+    let params = {};
+    if(req.query.categoryId) {
+      params.category_id = mongoose.Types.ObjectId(req.query.categoryId);
+    }
+    if (!showAll) {
+      params.is_show = true;
+    }
+    let result;
+    if (pageable === "0") {
+      result = await ArticleModel.find(params, { content: 0, mdcontent: 0 }).sort(
+        { created_time: -1 }
+      );
+    } else {
+      result = await ArticleModel.find(params, { content: 0, mdcontent: 0 })
+        .skip((pageNo - 1) * pageSize)
+        .limit(pageSize)
+        .sort({ created_time: -1 });
+    }
     const total = await (
       await ArticleModel.find(params, { content: 0, mdcontent: 0 })
     ).length;
@@ -26,7 +39,9 @@ router
         total,
       },
     });
-  })
+  });
+router
+  .route("/article")
   .post(async (req, res) => {
     const { title, category_id } = { ...req.body };
     if (!category_id) {
@@ -50,42 +65,6 @@ router
         success: true,
       });
   });
-
-// 文章列表
-router.route("/category/:categoryId/article").get(async (req, res) => {
-  const pageNo = parseInt(req.query.pageNo) || 1;
-  const pageSize = parseInt(req.query.pageSize) || 10;
-  const pageable = req.query.pageable;
-  const showAll = req.query.showAll;
-  const category_id = mongoose.Types.ObjectId(req.params.categoryId);
-  let params;
-  if (showAll) {
-    params = { category_id };
-  } else {
-    params = { is_show: true, category_id };
-  }
-  let result;
-  if (pageable === "0") {
-    result = await ArticleModel.find(params, { content: 0, mdcontent: 0 }).sort(
-      { created_time: -1 }
-    );
-  } else {
-    result = await ArticleModel.find(params, { content: 0, mdcontent: 0 })
-      .skip((pageNo - 1) * pageSize)
-      .limit(pageSize)
-      .sort({ created_time: -1 });
-  }
-  const total = (await ArticleModel.find(params, { content: 0, mdcontent: 0 }))
-    .length;
-  res.json({
-    data: result,
-    meta: {
-      pageNo,
-      pageSize,
-      total,
-    },
-  });
-});
 
 router
   .route("/article/:articleId")

@@ -74,7 +74,6 @@ export default defineComponent({
         }
         loading.value = false;
       } catch (error: any) {
-        console.log(error);
         loading.value = false;
         message.error(error.message);
       }

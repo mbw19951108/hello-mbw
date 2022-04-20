@@ -61,51 +61,41 @@ export default defineComponent({
       pageSize: 10,
       total: 0
     });
-    watch(
-      () => route.path,
-      () => searchArticles()
-    );
+    let categoryId = ref<string>(route.query.categoryId as string);
     watch(
       () => route.query,
-      () => searchArticles()
+      () => {
+        categoryId.value = route.query.categoryId as string;
+        searchArticles();
+      }
     );
     onMounted(() => searchArticles());
     // 获取文章
     const searchArticles = async () => {
-      const categoryId = route.params.categoryId as string;
       const query = { ...route.query };
       try {
         loading.value = true;
         let result;
-        if (categoryId) {
-          result = await ArticleService.searchByCategoryId(categoryId, query);
+        if (categoryId.value) {
+          result = await ArticleService.searchByCategoryId(categoryId.value, query);
         } else {
           result = await ArticleService.search(query);
         }
         articleList.value = result.data;
         meta.value = result.meta!;
         loading.value = false;
-        console.log(loading.value);
       } catch (error: any) {
         message.error(error.message);
         loading.value = false;
-        console.log(loading.value);
       }
     };
     // 选择文章
     const onSelectArticle = (articleId: string) => {
-      const categoryId = route.params.categoryId as string;
-      if (categoryId) {
-        router.push({
-          name: "CategoryArticleDetail",
-          params: { articleId, categoryId },
-        });
-      } else {
-        router.push({
-          name: "ArticleDetail",
-          params: { articleId },
-        });
-      }
+      router.push({
+        name: "ArticleDetail",
+        params: { articleId },
+        query: { categoryId: categoryId.value }
+      });
     };
     // 分页改变
     const onPageChange = (pageNo: number) => {

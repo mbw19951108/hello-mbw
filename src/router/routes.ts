@@ -22,18 +22,8 @@ export const menuRoutes: Array<RouteRecordRaw> = [
         component: () => import("@/views/blog/article-list.vue"),
       },
       {
-        name: "CategoryArticles",
-        path: ":categoryId/articles",
-        component: () => import("@/views/blog/article-list.vue"),
-      },
-      {
         name: "ArticleDetail",
         path: "article/:articleId",
-        component: () => import("@/views/blog/article-detail.vue"),
-      },
-      {
-        name: "CategoryArticleDetail",
-        path: ":categoryId/article/:articleId",
         component: () => import("@/views/blog/article-detail.vue"),
       },
     ],

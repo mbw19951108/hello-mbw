@@ -42,14 +42,12 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    let selectCategoryId = ref<string>("all");
+    let selectCategoryId = ref<string>(route.query.categoryId as string || "all");
     // 分类列表
     let categoryList = ref<CategoryModel[]>([]);
     watch(
-      () => route.path,
-      () => {
-        selectCategoryId.value = route.params.categoryId as string || "all";
-      }
+      () => route.query,
+      () => selectCategoryId.value = route.query.categoryId as string || "all"
     );
     onMounted(() => searchCategories());
     // 获取分类
@@ -64,8 +62,8 @@ export default defineComponent({
     // 选择分类
     const onSelectCategory = (categoryId: string) => {
       router.push({
-        name: "CategoryArticles",
-        params: { categoryId },
+        name: "Articles",
+        query: { categoryId },
       });
     };
     // 选择全部文章

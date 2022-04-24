@@ -1,6 +1,8 @@
 <template>
-  <a-spin wrapperClassName="spin" :spinning="loading">
-    <a-list class="list" item-layout="vertical" :data-source="articleList">
+  <a-spin wrapperClassName="spin" :spinning="loaded && loading">
+    <!-- 首次加载骨架屏占位 -->
+    <a-skeleton :loading="!loaded" active v-for="index of 5" :key="index" />
+    <a-list v-if="loaded" class="list" item-layout="vertical" :data-source="items">
       <template #renderItem="{ item }">
         <a-list-item>
           <a-list-item-meta>
@@ -8,6 +10,7 @@
               <a @click="onSelectArticle(item._id)">{{ item.title }}</a>
             </template>
           </a-list-item-meta>
+
           <template #actions>
             <div>
               <calendar-outlined />
@@ -32,15 +35,16 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
-import { message, List, Pagination, Spin } from "ant-design-vue";
+import { List, Pagination, Skeleton, Spin } from "ant-design-vue";
 import { EyeOutlined, CalendarOutlined } from "@ant-design/icons-vue";
-import { ArticleService } from "@/api";
-import { ArticleModel, MetaModel } from "@/api/models";
 import { useRoute, useRouter } from "vue-router";
+import { ArticlesStore } from "@/store";
+import { storeToRefs } from 'pinia'
 import moment from "moment";
 
 export default defineComponent({
   components: {
+    [Skeleton.name]: Skeleton,
     [Spin.name]: Spin,
     [List.name]: List,
     [List.Item.name]: List.Item,
@@ -52,44 +56,19 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    let loading = ref(false);
-    // 文章列表
-    let articleList = ref<ArticleModel[]>([]);
-    // 分页数据
-    let meta = ref<MetaModel>({
-      pageNo: 1,
-      pageSize: 10,
-      total: 0
-    });
-    let categoryId = ref<string>(route.query.categoryId as string);
+    const articlesStore = ArticlesStore();
+    const { loaded, loading, items, meta } = storeToRefs(articlesStore);
     watch(
       () => route.query,
-      () => {
-        categoryId.value = route.query.categoryId as string;
-        searchArticles();
-      }
+      () => articlesStore.getItems({ ...route.query })
     );
-    onMounted(() => searchArticles());
-    // 获取文章
-    const searchArticles = async () => {
-      const query = { ...route.query };
-      try {
-        loading.value = true;
-        const result = await ArticleService.search(query);
-        articleList.value = result.data;
-        meta.value = result.meta!;
-        loading.value = false;
-      } catch (error: any) {
-        message.error(error.message);
-        loading.value = false;
-      }
-    };
+    onMounted(() => articlesStore.getItems({ ...route.query }));
     // 选择文章
     const onSelectArticle = (articleId: string) => {
       router.push({
         name: "ArticleDetail",
         params: { articleId },
-        query: { categoryId: categoryId.value }
+        query: { categoryId: route.query.categoryId }
       });
     };
     // 分页改变
@@ -102,9 +81,10 @@ export default defineComponent({
       router.push({ query });
     };
     return {
+      loaded,
       loading,
       meta,
-      articleList,
+      items,
       moment,
       onSelectArticle,
       onPageChange,

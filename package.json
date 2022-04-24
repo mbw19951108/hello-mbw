@@ -35,11 +35,11 @@
     "mongodb": "^4.4.0",
     "mongoose": "^6.2.3",
     "multer": "^1.4.4",
+    "pinia": "^2.0.13",
     "qs": "^6.10.3",
     "svg-captcha": "^1.4.0",
     "vue": "^3.2.0",
-    "vue-router": "4",
-    "vuex": "^4.0.2"
+    "vue-router": "4"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.181",

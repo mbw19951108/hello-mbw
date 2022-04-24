@@ -6,7 +6,7 @@
           <a-menu-item :key="'all'" @click="onSelectAll()">
             <span>全部文章</span>
           </a-menu-item>
-          <a-sub-menu :key="category._id" v-for="category in categoryList">
+          <a-sub-menu :key="category._id" v-for="category in items">
             <template #title>
               <span>{{ category.title }}</span>
             </template>
@@ -24,10 +24,10 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
-import { Layout, Menu, message } from "ant-design-vue";
-import { CategoryService } from "@/api";
-import { CategoryModel } from "@/api/models";
+import { Layout, Menu } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
+import { CategoriesStore } from "@/store";
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
   components: {
@@ -42,23 +42,14 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const categoriesStore = CategoriesStore();
+    const { items } = storeToRefs(categoriesStore);
     let selectCategoryId = ref<string>(route.query.categoryId as string || "all");
-    // 分类列表
-    let categoryList = ref<CategoryModel[]>([]);
     watch(
       () => route.query,
       () => selectCategoryId.value = route.query.categoryId as string || "all"
     );
-    onMounted(() => searchCategories());
-    // 获取分类
-    const searchCategories = async () => {
-      try {
-        const { data } = await CategoryService.search();
-        categoryList.value = data;
-      } catch (error: any) {
-        message.error(error.message);
-      }
-    };
+    onMounted(() => categoriesStore.getItems());
     // 选择分类
     const onSelectCategory = (categoryId: string) => {
       router.push({
@@ -73,7 +64,7 @@ export default defineComponent({
       });
     };
     return {
-      categoryList,
+      items,
       selectCategoryId,
       onSelectCategory,
       onSelectAll,

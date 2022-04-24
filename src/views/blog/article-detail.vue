@@ -1,31 +1,31 @@
 <template>
   <div class="detail">
     <a-spin :spinning="loading">
-      <a-page-header class="detail__header" :title="articleDetail?.title" @back="onBack()">
+      <a-page-header class="detail__header" :title="detail?.title" @back="onBack()">
         <template #subTitle>
           <div class="detail__header__subTitle">
             <calendar-outlined />
             <span class="detail__header__subTitle__text">{{
-              moment(articleDetail?.created_time).format("YYYY-MM-DD")
+                moment(detail?.created_time).format("YYYY-MM-DD")
             }}</span>
           </div>
           <div class="detail__header__subTitle">
             <eye-outlined />
-            <span class="detail__header__subTitle__text">{{ articleDetail?.click_count }}</span>
+            <span class="detail__header__subTitle__text">{{ detail?.click_count }}</span>
           </div>
         </template>
       </a-page-header>
     </a-spin>
-    <div class="detail__content markdown-body" v-html="articleDetail?.content"></div>
+    <div class="detail__content markdown-body" v-html="detail?.content"></div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { message, PageHeader, Spin } from "ant-design-vue";
+import { PageHeader, Spin } from "ant-design-vue";
 import { EyeOutlined, CalendarOutlined } from "@ant-design/icons-vue";
-import { ArticleService } from "@/api";
-import { ArticleModel } from "@/api/models";
 import { useRoute } from "vue-router";
+import { ArticlesStore } from "@/store";
+import { storeToRefs } from 'pinia'
 import mavonEditor from "mavon-editor";
 import moment from "moment";
 export default defineComponent({
@@ -38,26 +38,13 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    let loading = ref<boolean>(false);
-    let articleDetail = ref<ArticleModel>();
-    onMounted(() => getArticle());
-    // 获取文章详情
-    const getArticle = async () => {
-      const articleId = route.params.articleId as string;
-      try {
-        loading.value = true;
-        const { data } = await ArticleService.detail(articleId);
-        articleDetail.value = data;
-        loading.value = false;
-      } catch (error: any) {
-        loading.value = false;
-        message.error(error.message);
-      }
-    };
+    const articlesStore = ArticlesStore();
+    const { loading, detail } = storeToRefs(articlesStore);
+    onMounted(() => articlesStore.getDetail(route.params.articleId as string));
     const onBack = () => history.back();
     return {
       loading,
-      articleDetail,
+      detail,
       moment,
       onBack,
     };

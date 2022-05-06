@@ -1,5 +1,7 @@
 <template>
-  <div id="container" ref="container"></div>
+  <div class="container" ref="container">
+    <a-progress v-if="loaded !== 100" type="circle" class="container__progress" :percent="loaded" />
+  </div>
 </template>
 <script lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
@@ -7,17 +9,24 @@ import * as THREE from "three";
 import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Progress } from "ant-design-vue";
 export default {
+  components: {
+    [Progress.name]: Progress,
+  },
   setup() {
     const container = ref<HTMLDivElement>();
+    const loaded = ref(0);
     // 场景
     const scene: THREE.Scene = new THREE.Scene();
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
     // 光源
-    var light = new THREE.AmbientLight();
+    var light = new THREE.SpotLight(0xffffff, 2);
+    var ambientLight = new THREE.AmbientLight();
     light.position.set(25, 25, 25);
     scene.add(light);
+    scene.add(ambientLight);
     // 相机
     const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
       35,
@@ -37,11 +46,12 @@ export default {
     // 模型
     const loader: GLTFLoader = new GLTFLoader();
     loader.load(
-      `/models/vintage_camera/scene.gltf`,
-      function (gltf) {
+      `/models/vintage_camera.glb`,
+      (gltf) => {
         scene.add(gltf.scene);
       },
       (xhr) => {
+        loaded.value = Math.trunc((xhr.loaded / xhr.total) * 100);
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
       },
       (error) => {
@@ -81,12 +91,20 @@ export default {
     })
     return {
       container,
+      loaded
     };
   },
 };
 </script>
 <style lang="less" scoped>
-#container {
+.container {
   height: 100%;
+
+  &__progress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 </style>

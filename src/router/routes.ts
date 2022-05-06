@@ -34,18 +34,18 @@ export const menuRoutes: Array<RouteRecordRaw> = [
     component: () => import("@/views/photography/photography.vue"),
     meta: { title: "摄影", icon: "camera-outlined" },
   },
+  {
+    path: "/threejs",
+    name: "Threejs",
+    component: () => import("@/views/threejs/threejs.vue"),
+    meta: { title: "Three.js", icon: "crown-outlined" },
+  },
   // {
   //   path: "/charts",
   //   name: "Charts",
   //   component: () => import("@/views/charts/charts.vue"),
   //   meta: { title: "Charts", icon: "dashboard-outlined" },
   // },
-  {
-    path: "/threejs",
-    name: "Threejs面试Demo",
-    component: () => import("@/views/threejs/threejs.vue"),
-    meta: { title: "Threejs", icon: "dashboard-outlined" },
-  },
 ];
 
 // 后台管理页面路由

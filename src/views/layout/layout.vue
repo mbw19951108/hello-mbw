@@ -1,7 +1,7 @@
 <template>
   <a-layout class="layout">
     <a-layout-header class="layout__header">
-      <img class="layout__header__logo" src="@/assets/logo.jpg" alt="logo" />
+      <img class="layout__header__logo" src="@/static/logo.jpg" alt="logo" />
       <a-menu class="layout__header__menu" :selectedKeys="selectedKeys" theme="dark" mode="horizontal">
         <a-menu-item v-for="route in filterRoutes()" :key="route.name">
           <router-link :to="{ path: route.path }">
@@ -25,6 +25,7 @@ import { Layout, Menu, Breadcrumb } from "ant-design-vue";
 import {
   BulbOutlined,
   CameraOutlined,
+  CrownOutlined,
   DashboardOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
@@ -43,6 +44,7 @@ export default defineComponent({
     [Breadcrumb.Item.name]: Breadcrumb.Item,
     BulbOutlined,
     CameraOutlined,
+    CrownOutlined,
     DashboardOutlined,
     GithubLink
   },

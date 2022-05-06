@@ -2,7 +2,7 @@
   <a-layout class="layout">
     <a-layout-sider>
       <div class="logo">
-        <img src="@/assets/logo.jpg" alt="logo" />
+        <img src="@/static/logo.jpg" alt="logo" />
       </div>
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
         <a-menu-item v-for="route in filterRoutes()" :key="route.name">
